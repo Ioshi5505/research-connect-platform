@@ -1,7 +1,13 @@
 import { Link, useNavigate } from "react-router-dom";
-import { Image, LogOut } from "lucide-react";
+import { Image, LogOut, ChevronDown } from "lucide-react";
 import { useSession, useSupabaseClient } from "@supabase/auth-helpers-react";
 import { Button } from "./ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export const Navbar = () => {
   const session = useSession();
@@ -37,31 +43,43 @@ export const Navbar = () => {
             </Link>
             
             <div className="hidden md:flex items-center ml-8">
-              {/* Main Menu Group */}
-              <div className="flex items-center space-x-4 border-r pr-4">
-                {mainMenuItems.map((item) => (
-                  <Link
-                    key={item.path}
-                    to={item.path}
-                    className="text-gray-700 hover:text-primary transition-colors"
-                  >
-                    {item.label}
-                  </Link>
-                ))}
-              </div>
+              {/* Main Menu Dropdown */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="flex items-center gap-2">
+                    Главное меню
+                    <ChevronDown className="h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-48">
+                  {mainMenuItems.map((item) => (
+                    <DropdownMenuItem key={item.path} asChild>
+                      <Link to={item.path} className="w-full">
+                        {item.label}
+                      </Link>
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
 
-              {/* Resources Menu Group */}
-              <div className="flex items-center space-x-4 pl-4">
-                {resourcesMenuItems.map((item) => (
-                  <Link
-                    key={item.path}
-                    to={item.path}
-                    className="text-gray-700 hover:text-primary transition-colors"
-                  >
-                    {item.label}
-                  </Link>
-                ))}
-              </div>
+              {/* Resources Menu Dropdown */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="flex items-center gap-2 ml-4">
+                    Ресурсы
+                    <ChevronDown className="h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-56">
+                  {resourcesMenuItems.map((item) => (
+                    <DropdownMenuItem key={item.path} asChild>
+                      <Link to={item.path} className="w-full">
+                        {item.label}
+                      </Link>
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </div>
           
