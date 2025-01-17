@@ -78,6 +78,15 @@ export const NewsSection = ({ hideAddButton = false }: { hideAddButton?: boolean
                   )}
                 </CardHeader>
                 <CardContent>
+                  {item.image_url && (
+                    <div className="mb-4">
+                      <img
+                        src={item.image_url}
+                        alt={item.title}
+                        className="w-full h-48 object-cover rounded-md"
+                      />
+                    </div>
+                  )}
                   <p className="text-gray-600 line-clamp-3">{item.content}</p>
                   <p className="text-sm text-gray-400 mt-4">
                     {new Date(item.created_at).toLocaleDateString("ru-RU")}

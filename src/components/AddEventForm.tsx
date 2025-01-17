@@ -16,14 +16,18 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useQueryClient } from "@tanstack/react-query";
 import { Image } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
 
 const formSchema = z.object({
   title: z.string().min(1, "Заголовок обязателен"),
-  content: z.string().min(1, "Содержание обязательно"),
+  description: z.string().min(1, "Описание обязательно"),
+  date: z.string().min(1, "Дата обязательна"),
+  hasLimit: z.boolean().default(false),
+  participantsLimit: z.string().optional(),
   image: z.instanceof(FileList).optional(),
 });
 
-export const AddNewsForm = () => {
+export const AddEventForm = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   
@@ -31,7 +35,10 @@ export const AddNewsForm = () => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       title: "",
-      content: "",
+      description: "",
+      date: "",
+      hasLimit: false,
+      participantsLimit: "",
     },
   });
 
@@ -58,7 +65,7 @@ export const AddNewsForm = () => {
         const fileName = `${Math.random()}.${fileExt}`;
         const filePath = `${fileName}`;
 
-        const { error: uploadError, data } = await supabase.storage
+        const { error: uploadError } = await supabase.storage
           .from('images')
           .upload(filePath, file);
 
@@ -73,36 +80,14 @@ export const AddNewsForm = () => {
         imageUrl = publicUrl;
       }
 
-      // First, check if the user's profile exists
-      const { data: profile, error: profileError } = await supabase
-        .from("profiles")
-        .select("id")
-        .eq("id", user.id)
-        .maybeSingle();
-
-      console.log("Profile check result:", { profile, profileError });
-
-      if (!profile) {
-        console.log("Creating new profile for user:", user.id);
-        const { error: insertError } = await supabase
-          .from("profiles")
-          .insert({
-            id: user.id,
-            role: "student",
-          });
-
-        if (insertError) {
-          console.error("Error creating profile:", insertError);
-          throw new Error("Failed to create user profile");
-        }
-        console.log("Profile created successfully");
-      }
-
-      const { error } = await supabase.from("news").insert({
+      const { error } = await supabase.from("events").insert({
         title: values.title,
-        content: values.content,
+        description: values.description,
+        date: new Date(values.date).toISOString(),
         author_id: user.id,
         image_url: imageUrl,
+        participants_limit: values.hasLimit ? parseInt(values.participantsLimit || "0") : null,
+        current_participants: 0,
       });
 
       if (error) {
@@ -110,23 +95,25 @@ export const AddNewsForm = () => {
         throw error;
       }
 
-      await queryClient.invalidateQueries({ queryKey: ["news"] });
+      await queryClient.invalidateQueries({ queryKey: ["events"] });
 
       toast({
         title: "Успех",
-        description: "Новость успешно добавлена",
+        description: "Мероприятие успешно добавлено",
       });
 
       form.reset();
     } catch (error) {
-      console.error("Error adding news:", error);
+      console.error("Error adding event:", error);
       toast({
         variant: "destructive",
         title: "Ошибка",
-        description: "Не удалось добавить новость. Проверьте, что у вас есть права на добавление новостей.",
+        description: "Не удалось добавить мероприятие",
       });
     }
   };
+
+  const hasLimit = form.watch("hasLimit");
 
   return (
     <Form {...form}>
@@ -146,13 +133,13 @@ export const AddNewsForm = () => {
         />
         <FormField
           control={form.control}
-          name="content"
+          name="description"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Содержание</FormLabel>
+              <FormLabel>Описание</FormLabel>
               <FormControl>
                 <Textarea
-                  placeholder="Введите содержание новости..."
+                  placeholder="Введите описание мероприятия..."
                   className="min-h-[150px]"
                   {...field}
                 />
@@ -161,6 +148,57 @@ export const AddNewsForm = () => {
             </FormItem>
           )}
         />
+        <FormField
+          control={form.control}
+          name="date"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Дата проведения</FormLabel>
+              <FormControl>
+                <Input type="datetime-local" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="hasLimit"
+          render={({ field }) => (
+            <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+              <div className="space-y-0.5">
+                <FormLabel className="text-base">
+                  Ограничение участников
+                </FormLabel>
+              </div>
+              <FormControl>
+                <Switch
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                />
+              </FormControl>
+            </FormItem>
+          )}
+        />
+        {hasLimit && (
+          <FormField
+            control={form.control}
+            name="participantsLimit"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Максимальное количество участников</FormLabel>
+                <FormControl>
+                  <Input
+                    type="number"
+                    placeholder="Введите количество..."
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
         <FormField
           control={form.control}
           name="image"
@@ -190,7 +228,7 @@ export const AddNewsForm = () => {
           )}
         />
         <Button type="submit" className="w-full">
-          Добавить новость
+          Добавить мероприятие
         </Button>
       </form>
     </Form>
