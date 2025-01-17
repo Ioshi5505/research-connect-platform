@@ -9,29 +9,71 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      event_participants: {
+        Row: {
+          created_at: string
+          event_id: string | null
+          id: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          event_id?: string | null
+          id?: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          event_id?: string | null
+          id?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_participants_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "event_participants_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       events: {
         Row: {
           author_id: string
           created_at: string
+          current_participants: number
           date: string
           description: string
           id: string
+          participants_limit: number | null
           title: string
         }
         Insert: {
           author_id: string
           created_at?: string
+          current_participants?: number
           date: string
           description: string
           id?: string
+          participants_limit?: number | null
           title: string
         }
         Update: {
           author_id?: string
           created_at?: string
+          current_participants?: number
           date?: string
           description?: string
           id?: string
+          participants_limit?: number | null
           title?: string
         }
         Relationships: [
