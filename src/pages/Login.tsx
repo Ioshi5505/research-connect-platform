@@ -15,7 +15,7 @@ const Login = () => {
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
+      async (event, session) => {
         console.log("Auth state changed:", event);
         if (event === "SIGNED_IN" && session) {
           console.log("User signed in, navigating to home");
@@ -24,31 +24,37 @@ const Login = () => {
         if (event === "SIGNED_OUT") {
           setError(null);
         }
+        if (event === "USER_UPDATED" && !session) {
+          const { error } = await supabase.auth.getSession();
+          if (error) {
+            console.error("Auth error:", error);
+            setError(getErrorMessage(error));
+          }
+        }
       }
     );
 
-    // Handle auth state errors
-    const handleAuthError = (error: AuthError) => {
-      console.error("Auth error:", error);
-      if (error.message.includes("Invalid login credentials")) {
-        setError("Invalid email or password. Please check your credentials and try again.");
-      } else {
-        setError(error.message);
-      }
-    };
-
-    // Subscribe to auth state changes
-    const authListener = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === "USER_UPDATED" && !session) {
-        handleAuthError(new Error("Authentication failed") as AuthError);
-      }
-    });
-
     return () => {
       subscription.unsubscribe();
-      authListener.data.subscription.unsubscribe();
     };
-  }, [navigate, toast]);
+  }, [navigate]);
+
+  const getErrorMessage = (error: AuthError) => {
+    console.error("Auth error details:", error);
+    const errorMessage = error.message;
+    
+    // Check if the error message contains specific strings
+    if (errorMessage.includes("Database error saving new user")) {
+      return "There was an error creating your account. Please try again later.";
+    }
+    if (errorMessage.includes("Invalid login credentials")) {
+      return "Invalid email or password. Please check your credentials and try again.";
+    }
+    if (errorMessage.includes("Email not confirmed")) {
+      return "Please verify your email address before signing in.";
+    }
+    return errorMessage || "An unexpected error occurred. Please try again.";
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
