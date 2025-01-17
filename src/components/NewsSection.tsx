@@ -1,14 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
-import { Newspaper, Plus } from "lucide-react";
-import { useState } from "react";
+import { Newspaper } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { AddNewsForm } from "./AddNewsForm";
 
-export const NewsSection = () => {
-  const [showAddForm, setShowAddForm] = useState(false);
-
+export const NewsSection = ({ hideAddButton = false }: { hideAddButton?: boolean }) => {
   const { data: news, isLoading } = useQuery({
     queryKey: ["news"],
     queryFn: async () => {
@@ -26,26 +21,10 @@ export const NewsSection = () => {
   return (
     <section className="py-16 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between mb-8">
-          <div className="flex items-center gap-2">
-            <Newspaper className="h-8 w-8 text-primary" />
-            <h2 className="text-3xl font-bold">Новости</h2>
-          </div>
-          <Button
-            onClick={() => setShowAddForm(!showAddForm)}
-            variant="outline"
-            className="flex items-center gap-2"
-          >
-            <Plus className="h-4 w-4" />
-            {showAddForm ? "Скрыть форму" : "Добавить новость"}
-          </Button>
+        <div className="flex items-center gap-2 mb-8">
+          <Newspaper className="h-8 w-8 text-primary" />
+          <h2 className="text-3xl font-bold">Новости</h2>
         </div>
-
-        {showAddForm && (
-          <div className="mb-8">
-            <AddNewsForm />
-          </div>
-        )}
         
         {isLoading ? (
           <div className="text-center">Загрузка...</div>

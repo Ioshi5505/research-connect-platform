@@ -24,6 +24,11 @@ export const Navbar = () => {
           
           <div className="flex items-center space-x-4">
             <Link to="/news" className="text-gray-700 hover:text-primary">Новости</Link>
+            {session && (
+              <Link to="/news/manage" className="text-gray-700 hover:text-primary">
+                Управление новостями
+              </Link>
+            )}
             <Link to="/events" className="text-gray-700 hover:text-primary">Мероприятия</Link>
             {session ? (
               <Button 
