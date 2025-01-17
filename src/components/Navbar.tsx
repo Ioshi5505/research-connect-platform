@@ -59,6 +59,13 @@ export const Navbar = () => {
                       </Link>
                     </DropdownMenuItem>
                   ))}
+                  {session?.user?.user_metadata?.role === 'employee' && (
+                    <DropdownMenuItem asChild>
+                      <Link to="/news/manage" className="w-full">
+                        Управление новостями
+                      </Link>
+                    </DropdownMenuItem>
+                  )}
                 </DropdownMenuContent>
               </DropdownMenu>
 
@@ -84,34 +91,24 @@ export const Navbar = () => {
           </div>
           
           <div className="flex items-center space-x-4">
-            {session && (
+            {session ? (
               <>
-                {session.user?.user_metadata?.role === 'employee' && (
-                  <Link 
-                    to="/news/manage" 
-                    className="text-gray-700 hover:text-primary transition-colors"
-                  >
-                    Управление новостями
-                  </Link>
-                )}
                 <Link 
                   to="/profile" 
                   className="text-gray-700 hover:text-primary transition-colors"
                 >
                   Профиль
                 </Link>
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  onClick={handleLogout}
+                  className="flex items-center gap-2"
+                >
+                  <LogOut className="h-4 w-4" />
+                  Выйти
+                </Button>
               </>
-            )}
-            {session ? (
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                onClick={handleLogout}
-                className="flex items-center gap-2"
-              >
-                <LogOut className="h-4 w-4" />
-                Выйти
-              </Button>
             ) : (
               <Link 
                 to="/login" 
