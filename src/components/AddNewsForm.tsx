@@ -53,10 +53,12 @@ export const AddNewsForm = () => {
         .from("profiles")
         .select("id")
         .eq("id", user.id)
-        .single();
+        .maybeSingle(); // Changed from .single() to .maybeSingle()
 
-      if (profileError || !profile) {
-        console.error("Profile error:", profileError);
+      console.log("Profile check result:", { profile, profileError });
+
+      if (!profile) {
+        console.log("Creating new profile for user:", user.id);
         // Create profile if it doesn't exist
         const { error: insertError } = await supabase
           .from("profiles")
@@ -69,6 +71,7 @@ export const AddNewsForm = () => {
           console.error("Error creating profile:", insertError);
           throw new Error("Failed to create user profile");
         }
+        console.log("Profile created successfully");
       }
 
       // Now insert the news
