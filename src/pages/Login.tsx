@@ -25,7 +25,7 @@ const Login = () => {
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
       <Card className="w-full max-w-md">
         <CardHeader>
-          <CardTitle className="text-2xl text-center">Welcome Back</CardTitle>
+          <CardTitle className="text-2xl text-center">Добро пожаловать</CardTitle>
         </CardHeader>
         <CardContent>
           <Auth
@@ -40,6 +40,54 @@ const Login = () => {
                   },
                 },
               },
+            }}
+            localization={{
+              variables: {
+                sign_up: {
+                  email_label: "Email адрес",
+                  password_label: "Пароль",
+                  email_input_placeholder: "Ваш email адрес",
+                  password_input_placeholder: "Ваш пароль",
+                  button_label: "Зарегистрироваться",
+                  loading_button_label: "Регистрация...",
+                  social_provider_text: "Войти через {{provider}}",
+                  link_text: "Нет аккаунта? Зарегистрируйтесь",
+                },
+                sign_in: {
+                  email_label: "Email адрес",
+                  password_label: "Пароль",
+                  email_input_placeholder: "Ваш email адрес",
+                  password_input_placeholder: "Ваш пароль",
+                  button_label: "Войти",
+                  loading_button_label: "Вход...",
+                  social_provider_text: "Войти через {{provider}}",
+                  link_text: "Уже есть аккаунт? Войдите",
+                },
+                forgotten_password: {
+                  link_text: "Забыли пароль?",
+                  email_label: "Email адрес",
+                  password_label: "Пароль",
+                  email_input_placeholder: "Ваш email адрес",
+                  button_label: "Отправить инструкции для сброса пароля",
+                  loading_button_label: "Отправка инструкций...",
+                },
+                update_password: {
+                  password_label: "Новый пароль",
+                  password_input_placeholder: "Ваш новый пароль",
+                  button_label: "Обновить пароль",
+                  loading_button_label: "Обновление пароля...",
+                },
+                verify_otp: {
+                  email_input_label: "Email адрес",
+                  email_input_placeholder: "Ваш email адрес",
+                  phone_input_label: "Номер телефона",
+                  phone_input_placeholder: "Ваш номер телефона",
+                  token_input_label: "Код",
+                  token_input_placeholder: "Ваш код подтверждения",
+                  button_label: "Подтвердить",
+                  loading_button_label: "Подтверждение...",
+                }
+              }
             }}
             providers={[]}
             redirectTo={window.location.origin}
