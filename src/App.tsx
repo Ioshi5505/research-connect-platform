@@ -5,8 +5,13 @@ import Index from "./pages/Index";
 import News from "./pages/News";
 import Events from "./pages/Events";
 import Login from "./pages/Login";
-import { supabase } from "./integrations/supabase/client";
+import Council from "./pages/Council";
+import Documents from "./pages/Documents";
+import Support from "./pages/Support";
+import Contacts from "./pages/Contacts";
+import Profile from "./pages/Profile";
 import { NewsManagement } from "./components/NewsManagement";
+import { supabase } from "./integrations/supabase/client";
 import "./App.css";
 
 const queryClient = new QueryClient();
@@ -22,6 +27,11 @@ function App() {
             <Route path="/news/manage" element={<NewsManagement />} />
             <Route path="/events" element={<Events />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/council" element={<Council />} />
+            <Route path="/documents" element={<Documents />} />
+            <Route path="/support" element={<Support />} />
+            <Route path="/contacts" element={<Contacts />} />
+            <Route path="/profile" element={<Profile />} />
           </Routes>
         </BrowserRouter>
       </SessionContextProvider>
