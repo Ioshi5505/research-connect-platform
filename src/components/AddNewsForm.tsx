@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { useQueryClient } from "@tanstack/react-query";
 
 const formSchema = z.object({
   title: z.string().min(1, "Заголовок обязателен"),
@@ -22,6 +23,8 @@ const formSchema = z.object({
 
 export const AddNewsForm = () => {
   const { toast } = useToast();
+  const queryClient = useQueryClient();
+  
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -51,7 +54,12 @@ export const AddNewsForm = () => {
         author_id: user.id,
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error("Error details:", error);
+        throw error;
+      }
+
+      await queryClient.invalidateQueries({ queryKey: ["news"] });
 
       toast({
         title: "Успех",
@@ -64,7 +72,7 @@ export const AddNewsForm = () => {
       toast({
         variant: "destructive",
         title: "Ошибка",
-        description: "Не удалось добавить новость",
+        description: "Не удалось добавить новость. Проверьте, что у вас есть права на добавление новостей.",
       });
     }
   };
