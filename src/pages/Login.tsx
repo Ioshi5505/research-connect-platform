@@ -7,11 +7,14 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AuthError } from "@supabase/supabase-js";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
 
 const Login = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [error, setError] = useState<string | null>(null);
+  const [selectedRole, setSelectedRole] = useState<'student' | 'employee'>('student');
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
@@ -67,6 +70,22 @@ const Login = () => {
               <AlertDescription>{error}</AlertDescription>
             </Alert>
           )}
+          <div className="mb-6">
+            <RadioGroup
+              defaultValue="student"
+              className="flex flex-col space-y-2"
+              onValueChange={(value) => setSelectedRole(value as 'student' | 'employee')}
+            >
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="student" id="student" />
+                <Label htmlFor="student">Студент</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="employee" id="employee" />
+                <Label htmlFor="employee">Сотрудник</Label>
+              </div>
+            </RadioGroup>
+          </div>
           <Auth
             supabaseClient={supabase}
             appearance={{
@@ -131,6 +150,9 @@ const Login = () => {
             providers={[]}
             redirectTo={window.location.origin}
             onlyThirdPartyProviders={false}
+            additionalData={{
+              role: selectedRole
+            }}
           />
         </CardContent>
       </Card>
