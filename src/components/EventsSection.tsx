@@ -6,7 +6,11 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { useSession } from "@supabase/auth-helpers-react";
 
-export const EventsSection = () => {
+interface EventsSectionProps {
+  hideAddButton?: boolean;
+}
+
+export const EventsSection = ({ hideAddButton }: EventsSectionProps) => {
   const { data: events, isLoading } = useQuery({
     queryKey: ["events"],
     queryFn: async () => {
