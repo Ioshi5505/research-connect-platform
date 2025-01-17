@@ -48,6 +48,30 @@ export const AddNewsForm = () => {
         return;
       }
 
+      // First, check if the user's profile exists
+      const { data: profile, error: profileError } = await supabase
+        .from("profiles")
+        .select("id")
+        .eq("id", user.id)
+        .single();
+
+      if (profileError || !profile) {
+        console.error("Profile error:", profileError);
+        // Create profile if it doesn't exist
+        const { error: insertError } = await supabase
+          .from("profiles")
+          .insert({
+            id: user.id,
+            role: "student", // Default role
+          });
+
+        if (insertError) {
+          console.error("Error creating profile:", insertError);
+          throw new Error("Failed to create user profile");
+        }
+      }
+
+      // Now insert the news
       const { error } = await supabase.from("news").insert({
         title: values.title,
         content: values.content,
