@@ -1,15 +1,17 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Auth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { AuthChangeEvent, Session } from "@supabase/supabase-js";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { AuthError } from "@supabase/supabase-js";
 
 const Login = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
@@ -19,16 +21,33 @@ const Login = () => {
           console.log("User signed in, navigating to home");
           navigate("/");
         }
-        if (event === "SIGNED_UP") {
-          toast({
-            title: "Регистрация успешна",
-            description: "Пожалуйста, проверьте вашу почту для подтверждения аккаунта",
-          });
+        if (event === "SIGNED_OUT") {
+          setError(null);
         }
       }
     );
 
-    return () => subscription.unsubscribe();
+    // Handle auth state errors
+    const handleAuthError = (error: AuthError) => {
+      console.error("Auth error:", error);
+      if (error.message.includes("Invalid login credentials")) {
+        setError("Invalid email or password. Please check your credentials and try again.");
+      } else {
+        setError(error.message);
+      }
+    };
+
+    // Subscribe to auth state changes
+    const authListener = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === "USER_UPDATED" && !session) {
+        handleAuthError(new Error("Authentication failed") as AuthError);
+      }
+    });
+
+    return () => {
+      subscription.unsubscribe();
+      authListener.data.subscription.unsubscribe();
+    };
   }, [navigate, toast]);
 
   return (
@@ -38,6 +57,11 @@ const Login = () => {
           <CardTitle className="text-2xl text-center">Добро пожаловать</CardTitle>
         </CardHeader>
         <CardContent>
+          {error && (
+            <Alert variant="destructive" className="mb-4">
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
+          )}
           <Auth
             supabaseClient={supabase}
             appearance={{
