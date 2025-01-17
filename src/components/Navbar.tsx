@@ -13,6 +13,19 @@ export const Navbar = () => {
     navigate('/login');
   };
 
+  const mainMenuItems = [
+    { path: "/", label: "Главная" },
+    { path: "/news", label: "Новости" },
+    { path: "/events", label: "Мероприятия" },
+  ];
+
+  const resourcesMenuItems = [
+    { path: "/council", label: "Управляющий совет" },
+    { path: "/documents", label: "Документы" },
+    { path: "/support", label: "Заявка на сопровождение" },
+    { path: "/contacts", label: "Контакты" },
+  ];
+
   return (
     <nav className="bg-white shadow-md">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -23,24 +36,50 @@ export const Navbar = () => {
               <span className="text-xl font-serif font-bold text-primary">СНО РГУСоцтех</span>
             </Link>
             
-            <div className="hidden md:flex items-center space-x-4 ml-8">
-              <Link to="/" className="text-gray-700 hover:text-primary">Главная</Link>
-              <Link to="/news" className="text-gray-700 hover:text-primary">Новости</Link>
-              <Link to="/events" className="text-gray-700 hover:text-primary">Мероприятия</Link>
-              <Link to="/council" className="text-gray-700 hover:text-primary">Управляющий совет</Link>
-              <Link to="/documents" className="text-gray-700 hover:text-primary">Документы</Link>
-              <Link to="/support" className="text-gray-700 hover:text-primary">Заявка на сопровождение</Link>
-              <Link to="/contacts" className="text-gray-700 hover:text-primary">Контакты</Link>
+            <div className="hidden md:flex items-center ml-8">
+              {/* Main Menu Group */}
+              <div className="flex items-center space-x-4 border-r pr-4">
+                {mainMenuItems.map((item) => (
+                  <Link
+                    key={item.path}
+                    to={item.path}
+                    className="text-gray-700 hover:text-primary transition-colors"
+                  >
+                    {item.label}
+                  </Link>
+                ))}
+              </div>
+
+              {/* Resources Menu Group */}
+              <div className="flex items-center space-x-4 pl-4">
+                {resourcesMenuItems.map((item) => (
+                  <Link
+                    key={item.path}
+                    to={item.path}
+                    className="text-gray-700 hover:text-primary transition-colors"
+                  >
+                    {item.label}
+                  </Link>
+                ))}
+              </div>
             </div>
           </div>
           
           <div className="flex items-center space-x-4">
             {session && (
               <>
-                <Link to="/news/manage" className="text-gray-700 hover:text-primary">
-                  Управление новостями
-                </Link>
-                <Link to="/profile" className="text-gray-700 hover:text-primary">
+                {session.user?.user_metadata?.role === 'employee' && (
+                  <Link 
+                    to="/news/manage" 
+                    className="text-gray-700 hover:text-primary transition-colors"
+                  >
+                    Управление новостями
+                  </Link>
+                )}
+                <Link 
+                  to="/profile" 
+                  className="text-gray-700 hover:text-primary transition-colors"
+                >
                   Профиль
                 </Link>
               </>
@@ -56,7 +95,10 @@ export const Navbar = () => {
                 Выйти
               </Button>
             ) : (
-              <Link to="/login" className="text-gray-700 hover:text-primary">
+              <Link 
+                to="/login" 
+                className="text-gray-700 hover:text-primary transition-colors"
+              >
                 Войти
               </Link>
             )}
