@@ -43,17 +43,16 @@ const Login = () => {
     console.error("Auth error details:", error);
     const errorMessage = error.message;
     
-    // Check if the error message contains specific strings
     if (errorMessage.includes("Database error saving new user")) {
-      return "There was an error creating your account. Please try again later.";
+      return "Произошла ошибка при создании аккаунта. Пожалуйста, попробуйте позже.";
     }
     if (errorMessage.includes("Invalid login credentials")) {
-      return "Invalid email or password. Please check your credentials and try again.";
+      return "Неверный email или пароль. Пожалуйста, проверьте введенные данные.";
     }
     if (errorMessage.includes("Email not confirmed")) {
-      return "Please verify your email address before signing in.";
+      return "Пожалуйста, подтвердите ваш email адрес перед входом.";
     }
-    return errorMessage || "An unexpected error occurred. Please try again.";
+    return errorMessage || "Произошла непредвиденная ошибка. Пожалуйста, попробуйте снова.";
   };
 
   return (
