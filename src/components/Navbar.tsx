@@ -21,7 +21,6 @@ export const Navbar = () => {
 
   const mainMenuItems = [
     { path: "/", label: "Главная" },
-    { path: "/news", label: "Новости" },
     { path: "/events", label: "Мероприятия" },
   ];
 
@@ -62,13 +61,6 @@ export const Navbar = () => {
                       </Link>
                     </DropdownMenuItem>
                   ))}
-                  {session?.user?.user_metadata?.role === 'employee' && (
-                    <DropdownMenuItem asChild>
-                      <Link to="/news/manage" className="w-full">
-                        Управление новостями
-                      </Link>
-                    </DropdownMenuItem>
-                  )}
                 </DropdownMenuContent>
               </DropdownMenu>
 
@@ -115,13 +107,6 @@ export const Navbar = () => {
                       </Link>
                     </DropdownMenuItem>
                   ))}
-                  {session?.user?.user_metadata?.role === 'employee' && (
-                    <DropdownMenuItem asChild>
-                      <Link to="/news/manage" className="w-full">
-                        Управление новостями
-                      </Link>
-                    </DropdownMenuItem>
-                  )}
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
