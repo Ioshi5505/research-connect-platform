@@ -89,6 +89,11 @@ const Contacts = () => {
                 <p className="text-muted-foreground text-center mb-2">
                   Представитель ФПиП
                 </p>
+                <div className="text-center">
+                  <a href="tel:+79042857485" className="text-accent hover:text-accent/80 transition-colors">
+                    +7 904-285-74-85
+                  </a>
+                </div>
               </CardHeader>
             </Card>
           </div>
