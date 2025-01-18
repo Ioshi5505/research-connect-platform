@@ -12,7 +12,7 @@ const Contacts = () => {
           <h1 className="text-3xl font-bold mb-8 text-center text-foreground">Контакты</h1>
           
           {/* Council Members Section with Contact Information */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
             <Card className="bg-card">
               <CardHeader>
                 <img 
@@ -50,6 +50,27 @@ const Contacts = () => {
                 <div className="text-center">
                   <a href="tel:+79096242127" className="text-accent hover:text-accent/80 transition-colors">
                     +7 909-624-21-27
+                  </a>
+                </div>
+              </CardHeader>
+            </Card>
+
+            <Card className="bg-card">
+              <CardHeader>
+                <img 
+                  src="/lovable-uploads/fd241724-2563-4a94-8d6e-f2aa68e99bf7.png" 
+                  alt="Файзулина Лилия Рифкатовна" 
+                  className="w-48 h-48 mx-auto mb-4 rounded-lg object-cover"
+                />
+                <h2 className="text-xl font-bold text-center text-foreground">
+                  Файзулина Лилия Рифкатовна
+                </h2>
+                <p className="text-muted-foreground text-center mb-2">
+                  Секретарь СНО
+                </p>
+                <div className="text-center">
+                  <a href="tel:+79275515464" className="text-accent hover:text-accent/80 transition-colors">
+                    +7 927-551-54-64
                   </a>
                 </div>
               </CardHeader>
