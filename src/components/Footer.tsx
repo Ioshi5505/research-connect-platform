@@ -34,15 +34,6 @@ export const Footer = () => {
                 </a>
               </p>
             </div>
-            <div className="mt-4">
-              <a 
-                href="mailto:snorgust@mail.ru" 
-                className="flex items-center gap-2 text-muted-foreground hover:text-accent transition-colors"
-              >
-                <Mail className="h-4 w-4" />
-                snorgust@mail.ru
-              </a>
-            </div>
           </div>
 
           {/* About Section - Right Side */}
@@ -60,6 +51,12 @@ export const Footer = () => {
         {/* Address and Copyright Section - Bottom Center */}
         <div className="mt-8 pt-8 border-t border-border">
           <div className="text-center space-y-4">
+            <div className="flex items-center justify-center gap-2 text-muted-foreground">
+              <Mail className="h-5 w-5 text-accent" />
+              <a href="mailto:snorgust@mail.ru" className="hover:text-accent transition-colors">
+                snorgust@mail.ru
+              </a>
+            </div>
             <div className="flex items-center justify-center gap-2 text-muted-foreground">
               <MapPin className="h-5 w-5 text-accent" />
               г. Москва, ул. Лосиноостровская, 49
