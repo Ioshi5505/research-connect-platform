@@ -4,19 +4,8 @@ export const Footer = () => {
   return (
     <footer className="bg-secondary mt-auto">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {/* Address Section */}
-          <div>
-            <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-              <MapPin className="h-5 w-5 text-accent" />
-              Адрес
-            </h3>
-            <p className="text-muted-foreground">
-              г. Москва, ул. Лосиноостровская, 49
-            </p>
-          </div>
-
-          {/* Contacts Section */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {/* Contacts Section - Left Side */}
           <div>
             <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
               <Phone className="h-5 w-5 text-accent" />
@@ -56,7 +45,7 @@ export const Footer = () => {
             </div>
           </div>
 
-          {/* About Section */}
+          {/* About Section - Right Side */}
           <div>
             <h3 className="text-lg font-semibold mb-4">О нас</h3>
             <p className="text-muted-foreground text-sm">
@@ -68,16 +57,22 @@ export const Footer = () => {
           </div>
         </div>
 
-        {/* Copyright Section */}
+        {/* Address and Copyright Section - Bottom Center */}
         <div className="mt-8 pt-8 border-t border-border">
-          <div className="text-center space-y-2">
-            <p className="text-sm text-muted-foreground">
-              Студенческое Научное Общество Российского государственного университета социальных технологий
-              («СНО РГУ СоцТех»)
-            </p>
-            <p className="text-sm text-muted-foreground">
-              © 2025. Все права защищены.
-            </p>
+          <div className="text-center space-y-4">
+            <div className="flex items-center justify-center gap-2 text-muted-foreground">
+              <MapPin className="h-5 w-5 text-accent" />
+              г. Москва, ул. Лосиноостровская, 49
+            </div>
+            <div className="space-y-2">
+              <p className="text-sm text-muted-foreground">
+                Студенческое Научное Общество Российского государственного университета социальных технологий
+                («СНО РГУ СоцТех»)
+              </p>
+              <p className="text-sm text-muted-foreground">
+                © 2025. Все права защищены.
+              </p>
+            </div>
           </div>
         </div>
       </div>
