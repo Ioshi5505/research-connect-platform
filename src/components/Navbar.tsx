@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import { Image, LogOut, ChevronDown, Moon, Sun } from "lucide-react";
+import { LogOut, ChevronDown, Moon, Sun } from "lucide-react";
 import { useSession, useSupabaseClient } from "@supabase/auth-helpers-react";
 import { useTheme } from "next-themes";
 import { Button } from "./ui/button";
@@ -40,7 +40,11 @@ export const Navbar = () => {
         <div className="flex justify-between h-16">
           <div className="flex items-center gap-2">
             <Link to="/" className="flex items-center gap-2">
-              <Image className="h-8 w-8 text-primary" />
+              <img 
+                src="/lovable-uploads/d457d329-afed-4a9d-b31e-49412a64a9c7.png" 
+                alt="СНО РГУ СоцТех Logo" 
+                className="h-8 w-auto"
+              />
               <span className="text-xl font-serif font-bold text-primary">СНО РГУСоцтех</span>
             </Link>
             
