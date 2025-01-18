@@ -52,6 +52,27 @@ const Council = () => {
                 </blockquote>
               </CardContent>
             </Card>
+
+            <Card className="bg-card">
+              <CardHeader>
+                <img 
+                  src="/lovable-uploads/6cbabdb7-f8c2-4e11-88bd-9d9f4ad26642.png" 
+                  alt="Пищулин Владислав Викторович" 
+                  className="w-48 h-48 mx-auto mb-4 rounded-lg object-cover"
+                />
+                <h2 className="text-xl font-bold text-center text-foreground">
+                  Пищулин Владислав Викторович
+                </h2>
+                <p className="text-muted-foreground text-center">
+                  Представитель ФПиП
+                </p>
+              </CardHeader>
+              <CardContent>
+                <blockquote className="border-l-4 border-primary pl-4 italic text-foreground">
+                  "У каждого человека есть желания, которые он не сообщает другим, и желания, в которых он не сознаётся даже себе самому"
+                </blockquote>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </main>
