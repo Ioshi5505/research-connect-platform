@@ -1,6 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
-import { Image, LogOut, ChevronDown } from "lucide-react";
+import { Image, LogOut, ChevronDown, Moon, Sun } from "lucide-react";
 import { useSession, useSupabaseClient } from "@supabase/auth-helpers-react";
+import { useTheme } from "next-themes";
 import { Button } from "./ui/button";
 import {
   DropdownMenu,
@@ -13,6 +14,7 @@ export const Navbar = () => {
   const session = useSession();
   const supabase = useSupabaseClient();
   const navigate = useNavigate();
+  const { theme, setTheme } = useTheme();
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
@@ -33,7 +35,7 @@ export const Navbar = () => {
   ];
 
   return (
-    <nav className="bg-white shadow-md">
+    <nav className="bg-background border-b border-border">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex items-center gap-2">
@@ -43,7 +45,6 @@ export const Navbar = () => {
             </Link>
             
             <div className="hidden md:flex items-center ml-8">
-              {/* Main Menu Dropdown */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" className="flex items-center gap-2">
@@ -69,7 +70,6 @@ export const Navbar = () => {
                 </DropdownMenuContent>
               </DropdownMenu>
 
-              {/* Resources Menu Dropdown */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" className="flex items-center gap-2 ml-4">
@@ -91,11 +91,23 @@ export const Navbar = () => {
           </div>
           
           <div className="flex items-center space-x-4">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+              className="mr-2"
+            >
+              {theme === "dark" ? (
+                <Sun className="h-5 w-5" />
+              ) : (
+                <Moon className="h-5 w-5" />
+              )}
+            </Button>
             {session ? (
               <>
                 <Link 
                   to="/profile" 
-                  className="text-gray-700 hover:text-primary transition-colors"
+                  className="text-foreground hover:text-accent transition-colors"
                 >
                   Профиль
                 </Link>
@@ -112,7 +124,7 @@ export const Navbar = () => {
             ) : (
               <Link 
                 to="/login" 
-                className="text-gray-700 hover:text-primary transition-colors"
+                className="text-foreground hover:text-accent transition-colors"
               >
                 Войти
               </Link>
