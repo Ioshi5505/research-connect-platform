@@ -31,6 +31,27 @@ const Council = () => {
                 </blockquote>
               </CardContent>
             </Card>
+
+            <Card className="bg-card">
+              <CardHeader>
+                <img 
+                  src="/lovable-uploads/d109f474-0f6a-4e2d-9036-242a74fdcd9a.png" 
+                  alt="Сорокин Егор Геннадьевич" 
+                  className="w-48 h-48 mx-auto mb-4 rounded-lg object-cover"
+                />
+                <h2 className="text-xl font-bold text-center text-foreground">
+                  Сорокин Егор Геннадьевич
+                </h2>
+                <p className="text-muted-foreground text-center">
+                  Заместитель председателя СНО
+                </p>
+              </CardHeader>
+              <CardContent>
+                <blockquote className="border-l-4 border-primary pl-4 italic text-foreground">
+                  "Настоящий программист видит возможности там, где другие видят ограничения."
+                </blockquote>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </main>
