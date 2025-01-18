@@ -1,7 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
-import { LogOut, ChevronDown, Moon, Sun } from "lucide-react";
+import { LogOut, ChevronDown } from "lucide-react";
 import { useSession, useSupabaseClient } from "@supabase/auth-helpers-react";
-import { useTheme } from "next-themes";
 import { Button } from "./ui/button";
 import {
   DropdownMenu,
@@ -14,7 +13,6 @@ export const Navbar = () => {
   const session = useSession();
   const supabase = useSupabaseClient();
   const navigate = useNavigate();
-  const { theme, setTheme } = useTheme();
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
@@ -45,10 +43,10 @@ export const Navbar = () => {
                 alt="СНО РГУ СоцТех Logo" 
                 className="h-8 w-auto"
               />
-              <span className="text-xl font-serif font-bold text-primary">СНО РГУСоцтех</span>
+              <span className="text-xl font-serif font-bold text-primary hidden sm:inline">СНО РГУСоцтех</span>
             </Link>
             
-            <div className="hidden md:flex items-center ml-8">
+            <div className="hidden md:flex items-center ml-8 space-x-4">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" className="flex items-center gap-2">
@@ -56,7 +54,7 @@ export const Navbar = () => {
                     <ChevronDown className="h-4 w-4" />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-48">
+                <DropdownMenuContent align="start" className="w-48">
                   {mainMenuItems.map((item) => (
                     <DropdownMenuItem key={item.path} asChild>
                       <Link to={item.path} className="w-full">
@@ -76,12 +74,12 @@ export const Navbar = () => {
 
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="flex items-center gap-2 ml-4">
+                  <Button variant="ghost" className="flex items-center gap-2">
                     Ресурсы
                     <ChevronDown className="h-4 w-4" />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-56">
+                <DropdownMenuContent align="start" className="w-56">
                   {resourcesMenuItems.map((item) => (
                     <DropdownMenuItem key={item.path} asChild>
                       <Link to={item.path} className="w-full">
@@ -92,21 +90,44 @@ export const Navbar = () => {
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
+
+            {/* Mobile Menu */}
+            <div className="md:hidden flex items-center ml-2">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="sm">
+                    Меню
+                    <ChevronDown className="h-4 w-4 ml-1" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="start" className="w-56">
+                  {mainMenuItems.map((item) => (
+                    <DropdownMenuItem key={item.path} asChild>
+                      <Link to={item.path} className="w-full">
+                        {item.label}
+                      </Link>
+                    </DropdownMenuItem>
+                  ))}
+                  {resourcesMenuItems.map((item) => (
+                    <DropdownMenuItem key={item.path} asChild>
+                      <Link to={item.path} className="w-full">
+                        {item.label}
+                      </Link>
+                    </DropdownMenuItem>
+                  ))}
+                  {session?.user?.user_metadata?.role === 'employee' && (
+                    <DropdownMenuItem asChild>
+                      <Link to="/news/manage" className="w-full">
+                        Управление новостями
+                      </Link>
+                    </DropdownMenuItem>
+                  )}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
           </div>
           
           <div className="flex items-center space-x-4">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-              className="mr-2"
-            >
-              {theme === "dark" ? (
-                <Sun className="h-5 w-5" />
-              ) : (
-                <Moon className="h-5 w-5" />
-              )}
-            </Button>
             {session ? (
               <>
                 <Link 
@@ -122,7 +143,7 @@ export const Navbar = () => {
                   className="flex items-center gap-2"
                 >
                   <LogOut className="h-4 w-4" />
-                  Выйти
+                  <span className="hidden sm:inline">Выйти</span>
                 </Button>
               </>
             ) : (
