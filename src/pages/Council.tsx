@@ -14,9 +14,9 @@ const Council = () => {
             <Card className="bg-card">
               <CardHeader>
                 <img 
-                  src="/lovable-uploads/d457d329-afed-4a9d-b31e-49412a64a9c7.png" 
-                  alt="СНО РГУ СоцТех Logo" 
-                  className="w-32 h-32 mx-auto mb-4 rounded-full object-cover"
+                  src="/lovable-uploads/011f6b43-8922-4796-aa49-d4e6d274d35d.png" 
+                  alt="Коблов Никита Дмитриевич" 
+                  className="w-48 h-48 mx-auto mb-4 rounded-lg object-cover"
                 />
                 <h2 className="text-xl font-bold text-center text-foreground">
                   Коблов Никита Дмитриевич
