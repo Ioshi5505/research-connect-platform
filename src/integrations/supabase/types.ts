@@ -109,6 +109,8 @@ export type Database = {
       }
       support_requests: {
         Row: {
+          assigned_to: string | null
+          comments: Json[] | null
           course: number
           created_at: string
           data_processing_consent: boolean
@@ -118,6 +120,7 @@ export type Database = {
           faculty: string
           file_url: string | null
           full_name: string
+          history: Json[] | null
           id: string
           scientific_field: string
           special_requirements: string | null
@@ -129,6 +132,8 @@ export type Database = {
           work_type: Database["public"]["Enums"]["work_type"]
         }
         Insert: {
+          assigned_to?: string | null
+          comments?: Json[] | null
           course: number
           created_at?: string
           data_processing_consent: boolean
@@ -138,6 +143,7 @@ export type Database = {
           faculty: string
           file_url?: string | null
           full_name: string
+          history?: Json[] | null
           id?: string
           scientific_field: string
           special_requirements?: string | null
@@ -149,6 +155,8 @@ export type Database = {
           work_type: Database["public"]["Enums"]["work_type"]
         }
         Update: {
+          assigned_to?: string | null
+          comments?: Json[] | null
           course?: number
           created_at?: string
           data_processing_consent?: boolean
@@ -158,6 +166,7 @@ export type Database = {
           faculty?: string
           file_url?: string | null
           full_name?: string
+          history?: Json[] | null
           id?: string
           scientific_field?: string
           special_requirements?: string | null
@@ -169,6 +178,13 @@ export type Database = {
           work_type?: Database["public"]["Enums"]["work_type"]
         }
         Relationships: [
+          {
+            foreignKeyName: "support_requests_assigned_to_fkey"
+            columns: ["assigned_to"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "support_requests_user_id_fkey"
             columns: ["user_id"]
