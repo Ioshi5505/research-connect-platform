@@ -8,7 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 const Support = () => {
   const session = useSession();
 
-  const { data: profile } = useQuery({
+  const { data: profile, isLoading } = useQuery({
     queryKey: ["profile", session?.user?.id],
     queryFn: async () => {
       if (!session?.user?.id) return null;
@@ -16,15 +16,29 @@ const Support = () => {
         .from("profiles")
         .select("*")
         .eq("id", session.user.id)
-        .single();
+        .maybeSingle();
 
-      if (error) throw error;
+      if (error) {
+        console.error("Error fetching profile:", error);
+        throw error;
+      }
       return data;
     },
     enabled: !!session?.user?.id,
   });
 
   const isEmployee = profile?.role === "employee";
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen">
+        <Navbar />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          Загрузка...
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen">
