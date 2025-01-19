@@ -33,7 +33,9 @@ export const UserRoleManagement = () => {
       const { data: profiles, error: profilesError } = await supabase
         .from("profiles")
         .select(`
-          *,
+          id,
+          role,
+          created_at,
           auth_users:id(
             email
           )
@@ -46,7 +48,16 @@ export const UserRoleManagement = () => {
       }
 
       console.log("Fetched profiles:", profiles);
-      return profiles as Profile[];
+      
+      // Ensure the data matches our Profile type
+      const typedProfiles = profiles?.map((profile: any) => ({
+        id: profile.id,
+        role: profile.role,
+        created_at: profile.created_at,
+        auth_users: profile.auth_users || null
+      })) as Profile[];
+
+      return typedProfiles;
     },
   });
 
