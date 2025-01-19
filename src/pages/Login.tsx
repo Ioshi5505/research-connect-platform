@@ -17,17 +17,20 @@ const Login = () => {
   const [selectedRole, setSelectedRole] = useState<'student' | 'employee'>('student');
 
   useEffect(() => {
+    console.log("Setting up auth state change listener");
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
-        console.log("Auth state changed:", event);
+        console.log("Auth state changed:", event, session);
         if (event === "SIGNED_IN" && session) {
-          console.log("User signed in, navigating to home");
+          console.log("User signed in successfully, navigating to home");
           navigate("/");
         }
         if (event === "SIGNED_OUT") {
+          console.log("User signed out, clearing error state");
           setError(null);
         }
         if (event === "USER_UPDATED" && !session) {
+          console.log("User updated without session, checking for errors");
           const { error } = await supabase.auth.getSession();
           if (error) {
             console.error("Auth error:", error);
@@ -37,14 +40,28 @@ const Login = () => {
       }
     );
 
+    // Check if user is already signed in
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) {
+        console.log("Existing session found, navigating to home");
+        navigate("/");
+      }
+    });
+
     return () => {
       subscription.unsubscribe();
     };
   }, [navigate]);
 
   const getErrorMessage = (error: AuthError) => {
-    console.error("Auth error details:", error);
+    console.error("Processing auth error:", error);
     const errorMessage = error.message;
+    const errorDetails = error.message.includes('{') ? JSON.parse(error.message) : null;
+    
+    // Check for specific error codes in the error details
+    if (errorDetails?.code === "invalid_credentials") {
+      return "Неверный email или пароль. Пожалуйста, проверьте введенные данные.";
+    }
     
     if (errorMessage.includes("Database error saving new user")) {
       return "Произошла ошибка при создании аккаунта. Пожалуйста, попробуйте позже.";
@@ -55,7 +72,7 @@ const Login = () => {
     if (errorMessage.includes("Email not confirmed")) {
       return "Пожалуйста, подтвердите ваш email адрес перед входом.";
     }
-    return errorMessage || "Произошла непредвиденная ошибка. Пожалуйста, попробуйте снова.";
+    return "Произошла непредвиденная ошибка. Пожалуйста, попробуйте снова.";
   };
 
   return (
