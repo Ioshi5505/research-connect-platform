@@ -107,6 +107,77 @@ export type Database = {
         }
         Relationships: []
       }
+      support_requests: {
+        Row: {
+          course: number
+          created_at: string
+          data_processing_consent: boolean
+          description: string
+          desired_deadline: string
+          email: string
+          faculty: string
+          file_url: string | null
+          full_name: string
+          id: string
+          scientific_field: string
+          special_requirements: string | null
+          status: string
+          support_types: Database["public"]["Enums"]["support_type"][]
+          title: string
+          user_id: string
+          work_stage: Database["public"]["Enums"]["work_stage"]
+          work_type: Database["public"]["Enums"]["work_type"]
+        }
+        Insert: {
+          course: number
+          created_at?: string
+          data_processing_consent: boolean
+          description: string
+          desired_deadline: string
+          email: string
+          faculty: string
+          file_url?: string | null
+          full_name: string
+          id?: string
+          scientific_field: string
+          special_requirements?: string | null
+          status?: string
+          support_types: Database["public"]["Enums"]["support_type"][]
+          title: string
+          user_id: string
+          work_stage: Database["public"]["Enums"]["work_stage"]
+          work_type: Database["public"]["Enums"]["work_type"]
+        }
+        Update: {
+          course?: number
+          created_at?: string
+          data_processing_consent?: boolean
+          description?: string
+          desired_deadline?: string
+          email?: string
+          faculty?: string
+          file_url?: string | null
+          full_name?: string
+          id?: string
+          scientific_field?: string
+          special_requirements?: string | null
+          status?: string
+          support_types?: Database["public"]["Enums"]["support_type"][]
+          title?: string
+          user_id?: string
+          work_stage?: Database["public"]["Enums"]["work_stage"]
+          work_type?: Database["public"]["Enums"]["work_type"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "support_requests_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -115,7 +186,10 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
+      support_type: "editing" | "formatting" | "publication" | "conference"
       user_role: "student" | "employee"
+      work_stage: "idea" | "draft" | "complete"
+      work_type: "article" | "report"
     }
     CompositeTypes: {
       [_ in never]: never
