@@ -27,14 +27,14 @@ export const Navbar = () => {
         throw error;
       }
       
-      console.log("User role data:", data); // Debug log
+      console.log("User role data:", data);
       return data?.role || null;
     },
     enabled: !!session?.user?.id,
   });
 
   const isEmployee = userRole === 'employee';
-  console.log("Is employee:", isEmployee); // Debug log
+  console.log("Is employee:", isEmployee);
 
   return (
     <nav className="bg-background border-b border-border">
@@ -54,7 +54,7 @@ export const Navbar = () => {
             
             <div className="hidden md:flex items-center ml-8 space-x-4">
               <MainMenu isEmployee={isEmployee} />
-              <ResourcesMenu />
+              <ResourcesMenu isEmployee={isEmployee} />
             </div>
 
             <MobileMenu isEmployee={isEmployee} />
