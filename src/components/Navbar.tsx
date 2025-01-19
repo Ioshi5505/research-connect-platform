@@ -20,13 +20,19 @@ export const Navbar = () => {
         .eq("id", session.user.id)
         .maybeSingle();
 
-      if (error) throw error;
-      return data?.role;
+      if (error) {
+        console.error("Error fetching user role:", error);
+        throw error;
+      }
+      
+      console.log("User role data:", data); // Debug log
+      return data?.role || null;
     },
     enabled: !!session?.user?.id,
   });
 
   const isEmployee = userRole === 'employee';
+  console.log("Is employee:", isEmployee); // Debug log
 
   return (
     <nav className="bg-background border-b border-border">
