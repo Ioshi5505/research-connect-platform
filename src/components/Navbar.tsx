@@ -50,7 +50,7 @@ export const Navbar = () => {
   ];
 
   // Add employee section to main menu items if user is an employee
-  if (session && userProfile?.role === 'employee') {
+  if (userProfile?.role === 'employee') {
     mainMenuItems.push({
       path: "/support",
       label: "Полученные заявки",
@@ -139,7 +139,7 @@ export const Navbar = () => {
           </div>
           
           <div className="flex items-center space-x-4">
-            {session && userProfile?.role === 'employee' && (
+            {userProfile?.role === 'employee' && (
               <Link 
                 to="/support" 
                 className="flex items-center gap-2 text-foreground hover:text-accent transition-colors"
