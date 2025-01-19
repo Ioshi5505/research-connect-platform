@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/carousel";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { UserPlus } from "lucide-react";
+import { Pencil, Trash2, UserPlus } from "lucide-react";
 import { useSession } from "@supabase/auth-helpers-react";
 import { useToast } from "@/hooks/use-toast";
 
@@ -25,7 +25,7 @@ export const EventsCarousel = () => {
 
       const { data, error } = await supabase
         .from("events")
-        .select("*, event_participants(user_id)")
+        .select("*, profiles(role), event_participants(user_id)")
         .gte("date", twoMonthsAgo.toISOString())
         .order("date", { ascending: true })
         .limit(5);
@@ -69,8 +69,35 @@ export const EventsCarousel = () => {
     }
   };
 
+  const handleDelete = async (eventId: string) => {
+    try {
+      const { error } = await supabase
+        .from("events")
+        .delete()
+        .eq("id", eventId);
+
+      if (error) throw error;
+
+      toast({
+        title: "Успех",
+        description: "Мероприятие успешно удалено",
+      });
+    } catch (error) {
+      console.error("Error deleting event:", error);
+      toast({
+        variant: "destructive",
+        title: "Ошибка",
+        description: "Не удалось удалить мероприятие",
+      });
+    }
+  };
+
   const isUserParticipant = (event: any) => {
     return event.event_participants?.some((p: any) => p.user_id === session?.user?.id);
+  };
+
+  const isEmployee = (event: any) => {
+    return event.profiles?.role === 'employee' && event.author_id === session?.user?.id;
   };
 
   if (isLoading) return <div className="text-center">Загрузка...</div>;
@@ -85,6 +112,15 @@ export const EventsCarousel = () => {
                 <CardTitle className="text-xl line-clamp-2">{event.title}</CardTitle>
               </CardHeader>
               <CardContent>
+                {event.image_url && (
+                  <div className="mb-4">
+                    <img
+                      src={event.image_url}
+                      alt={event.title}
+                      className="w-full h-48 object-cover rounded-md"
+                    />
+                  </div>
+                )}
                 <p className="text-gray-600 line-clamp-3">{event.description}</p>
                 <p className="text-sm font-semibold text-primary mt-4">
                   {new Date(event.date).toLocaleDateString("ru-RU")}
@@ -94,15 +130,35 @@ export const EventsCarousel = () => {
                     Участники: {event.current_participants} / {event.participants_limit}
                   </p>
                 )}
-                {session?.user?.id && !isUserParticipant(event) && (
-                  <Button
-                    onClick={() => handleJoin(event.id)}
-                    disabled={event.participants_limit && event.current_participants >= event.participants_limit}
-                    className="w-full mt-4"
-                  >
-                    <UserPlus className="h-4 w-4 mr-2" />
-                    Присоединиться
-                  </Button>
+                {isEmployee(event) ? (
+                  <div className="flex gap-2 mt-4">
+                    <Button
+                      variant="outline"
+                      className="flex-1"
+                      onClick={() => handleDelete(event.id)}
+                    >
+                      <Trash2 className="h-4 w-4 mr-2" />
+                      Удалить
+                    </Button>
+                    <Button
+                      variant="outline"
+                      className="flex-1"
+                    >
+                      <Pencil className="h-4 w-4 mr-2" />
+                      Изменить
+                    </Button>
+                  </div>
+                ) : (
+                  session?.user?.id && !isUserParticipant(event) && (
+                    <Button
+                      onClick={() => handleJoin(event.id)}
+                      disabled={event.participants_limit && event.current_participants >= event.participants_limit}
+                      className="w-full mt-4"
+                    >
+                      <UserPlus className="h-4 w-4 mr-2" />
+                      Присоединиться
+                    </Button>
+                  )
                 )}
               </CardContent>
             </Card>
