@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { ChevronDown, UserCog } from "lucide-react";
+import { LucideIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -12,8 +13,14 @@ interface ResourcesMenuProps {
   isEmployee?: boolean;
 }
 
+interface MenuItemType {
+  path: string;
+  label: string;
+  icon?: LucideIcon;
+}
+
 export const ResourcesMenu = ({ isEmployee }: ResourcesMenuProps) => {
-  const resourcesMenuItems = [
+  const resourcesMenuItems: MenuItemType[] = [
     { path: "/council", label: "Управляющий совет" },
     { path: "/documents", label: "Документы" },
     { path: "/contacts", label: "Контакты" },

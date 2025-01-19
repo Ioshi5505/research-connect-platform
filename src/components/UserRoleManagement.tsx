@@ -16,9 +16,7 @@ type Profile = {
   id: string;
   role: "student" | "employee";
   created_at: string;
-  auth_users: {
-    email: string;
-  } | null;
+  email?: string;
 };
 
 export const UserRoleManagement = () => {
@@ -30,15 +28,14 @@ export const UserRoleManagement = () => {
     queryKey: ["profiles"],
     queryFn: async () => {
       console.log("Fetching profiles...");
+      
+      // First, get all profiles
       const { data: profiles, error: profilesError } = await supabase
         .from("profiles")
         .select(`
           id,
           role,
-          created_at,
-          auth_users:id(
-            email
-          )
+          created_at
         `)
         .order("created_at", { ascending: false });
 
@@ -47,17 +44,26 @@ export const UserRoleManagement = () => {
         throw profilesError;
       }
 
-      console.log("Fetched profiles:", profiles);
-      
-      // Ensure the data matches our Profile type
-      const typedProfiles = profiles?.map((profile: any) => ({
-        id: profile.id,
-        role: profile.role,
-        created_at: profile.created_at,
-        auth_users: profile.auth_users || null
-      })) as Profile[];
+      // Then, for each profile, get the corresponding user email
+      const profilesWithEmail = await Promise.all(
+        profiles.map(async (profile) => {
+          const { data: userData, error: userError } = await supabase
+            .from("auth_users")
+            .select("email")
+            .eq("id", profile.id)
+            .single();
 
-      return typedProfiles;
+          if (userError) {
+            console.warn("Could not fetch email for user:", profile.id);
+            return { ...profile, email: undefined };
+          }
+
+          return { ...profile, email: userData?.email };
+        })
+      );
+
+      console.log("Fetched profiles with emails:", profilesWithEmail);
+      return profilesWithEmail;
     },
   });
 
@@ -122,7 +128,7 @@ export const UserRoleManagement = () => {
         <TableBody>
           {users?.map((user) => (
             <TableRow key={user.id}>
-              <TableCell>{user.auth_users?.email}</TableCell>
+              <TableCell>{user.email}</TableCell>
               <TableCell>{new Date(user.created_at).toLocaleDateString()}</TableCell>
               <TableCell>
                 <span className={user.role === "employee" ? "text-green-600" : "text-blue-600"}>
