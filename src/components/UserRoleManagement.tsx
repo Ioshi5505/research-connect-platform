@@ -29,14 +29,9 @@ export const UserRoleManagement = () => {
     queryFn: async () => {
       console.log("Fetching profiles...");
       
-      // First, get all profiles
       const { data: profiles, error: profilesError } = await supabase
         .from("profiles")
-        .select(`
-          id,
-          role,
-          created_at
-        `)
+        .select("id, role, created_at")
         .order("created_at", { ascending: false });
 
       if (profilesError) {
@@ -44,26 +39,30 @@ export const UserRoleManagement = () => {
         throw profilesError;
       }
 
-      // Then, for each profile, get the corresponding user email
-      const profilesWithEmail = await Promise.all(
-        profiles.map(async (profile) => {
-          const { data: userData, error: userError } = await supabase
-            .from("auth_users")
-            .select("email")
-            .eq("id", profile.id)
-            .single();
+      // Get user emails from auth.users through RPC function
+      // We'll need to create this function in Supabase
+      const { data: usersData, error: usersError } = await supabase
+        .rpc('get_user_emails', {
+          user_ids: profiles.map(p => p.id)
+        });
 
-          if (userError) {
-            console.warn("Could not fetch email for user:", profile.id);
-            return { ...profile, email: undefined };
-          }
+      if (usersError) {
+        console.error("Error fetching user emails:", usersError);
+        // Continue without emails if there's an error
+        return profiles.map(profile => ({
+          ...profile,
+          email: undefined
+        }));
+      }
 
-          return { ...profile, email: userData?.email };
-        })
-      );
+      // Combine profiles with emails
+      const profilesWithEmails = profiles.map(profile => ({
+        ...profile,
+        email: usersData?.find(u => u.id === profile.id)?.email
+      }));
 
-      console.log("Fetched profiles with emails:", profilesWithEmail);
-      return profilesWithEmail;
+      console.log("Fetched profiles with emails:", profilesWithEmails);
+      return profilesWithEmails;
     },
   });
 
