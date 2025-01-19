@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import { LogOut, ChevronDown } from "lucide-react";
+import { LogOut, ChevronDown, Inbox } from "lucide-react";
 import { useSession, useSupabaseClient } from "@supabase/auth-helpers-react";
 import { Button } from "./ui/button";
 import {
@@ -8,14 +8,32 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Navbar = () => {
   const session = useSession();
-  const supabase = useSupabaseClient();
+  const supabaseClient = useSupabaseClient();
   const navigate = useNavigate();
 
+  const { data: userProfile } = useQuery({
+    queryKey: ["user-profile", session?.user?.id],
+    queryFn: async () => {
+      if (!session?.user?.id) return null;
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", session.user.id)
+        .single();
+
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!session?.user?.id,
+  });
+
   const handleLogout = async () => {
-    await supabase.auth.signOut();
+    await supabaseClient.auth.signOut();
     navigate('/login');
   };
 
@@ -113,6 +131,15 @@ export const Navbar = () => {
           </div>
           
           <div className="flex items-center space-x-4">
+            {session && userProfile?.role === 'employee' && (
+              <Link 
+                to="/support" 
+                className="flex items-center gap-2 text-foreground hover:text-accent transition-colors"
+              >
+                <Inbox className="h-4 w-4" />
+                <span className="hidden sm:inline">Полученные заявки</span>
+              </Link>
+            )}
             {session ? (
               <>
                 <Link 
