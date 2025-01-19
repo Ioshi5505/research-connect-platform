@@ -10,21 +10,23 @@ import { UserMenu } from "./navbar/UserMenu";
 export const Navbar = () => {
   const session = useSession();
 
-  const { data: userProfile } = useQuery({
-    queryKey: ["user-profile", session?.user?.id],
+  const { data: userRole } = useQuery({
+    queryKey: ["user-role", session?.user?.id],
     queryFn: async () => {
       if (!session?.user?.id) return null;
       const { data, error } = await supabase
         .from("profiles")
-        .select("*")
+        .select("role")
         .eq("id", session.user.id)
         .maybeSingle();
 
       if (error) throw error;
-      return data;
+      return data?.role;
     },
     enabled: !!session?.user?.id,
   });
+
+  const isEmployee = userRole === 'employee';
 
   return (
     <nav className="bg-background border-b border-border">
@@ -43,14 +45,14 @@ export const Navbar = () => {
             </Link>
             
             <div className="hidden md:flex items-center ml-8 space-x-4">
-              <MainMenu userProfile={userProfile} />
+              <MainMenu isEmployee={isEmployee} />
               <ResourcesMenu />
             </div>
 
-            <MobileMenu userProfile={userProfile} />
+            <MobileMenu isEmployee={isEmployee} />
           </div>
           
-          <UserMenu session={!!session} userProfile={userProfile} />
+          <UserMenu session={!!session} isEmployee={isEmployee} />
         </div>
       </div>
     </nav>

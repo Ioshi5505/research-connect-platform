@@ -2,14 +2,13 @@ import { Link, useNavigate } from "react-router-dom";
 import { LogOut, Inbox } from "lucide-react";
 import { useSupabaseClient } from "@supabase/auth-helpers-react";
 import { Button } from "@/components/ui/button";
-import { Profile } from "@/integrations/supabase/types";
 
 interface UserMenuProps {
   session: boolean;
-  userProfile: Profile | null;
+  isEmployee?: boolean;
 }
 
-export const UserMenu = ({ session, userProfile }: UserMenuProps) => {
+export const UserMenu = ({ session, isEmployee }: UserMenuProps) => {
   const supabaseClient = useSupabaseClient();
   const navigate = useNavigate();
 
@@ -20,7 +19,7 @@ export const UserMenu = ({ session, userProfile }: UserMenuProps) => {
 
   return (
     <div className="flex items-center space-x-4">
-      {userProfile?.role === 'employee' && (
+      {isEmployee && (
         <Link 
           to="/support" 
           className="flex items-center gap-2 text-foreground hover:text-accent transition-colors"

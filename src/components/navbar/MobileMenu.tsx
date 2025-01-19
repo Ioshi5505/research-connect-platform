@@ -7,13 +7,12 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Profile } from "@/integrations/supabase/types";
 
 interface MobileMenuProps {
-  userProfile: Profile | null;
+  isEmployee?: boolean;
 }
 
-export const MobileMenu = ({ userProfile }: MobileMenuProps) => {
+export const MobileMenu = ({ isEmployee }: MobileMenuProps) => {
   const mainMenuItems = [
     { path: "/", label: "Главная" },
     { path: "/events", label: "Мероприятия" },
@@ -26,7 +25,7 @@ export const MobileMenu = ({ userProfile }: MobileMenuProps) => {
     { path: "/contacts", label: "Контакты" },
   ];
 
-  if (userProfile?.role === 'employee') {
+  if (isEmployee) {
     mainMenuItems.push({
       path: "/support",
       label: "Полученные заявки",
