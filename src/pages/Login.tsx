@@ -27,6 +27,7 @@ const Login = () => {
     
     try {
       if (isSignUp) {
+        console.log("Attempting signup with role:", role);
         const { data, error } = await supabase.auth.signUp({
           email,
           password,
@@ -38,12 +39,14 @@ const Login = () => {
         });
 
         if (error) {
+          console.error("Signup error:", error);
           if (error.status === 429) {
             throw new Error("Пожалуйста, подождите минуту перед следующей попыткой регистрации");
           }
           throw error;
         }
 
+        console.log("Signup successful:", data);
         if (data.user) {
           toast({
             title: "Успешно!",
@@ -53,13 +56,18 @@ const Login = () => {
           setPassword("");
         }
       } else {
+        console.log("Attempting login");
         const { data, error } = await supabase.auth.signInWithPassword({
           email,
           password,
         });
 
-        if (error) throw error;
+        if (error) {
+          console.error("Login error:", error);
+          throw error;
+        }
 
+        console.log("Login successful:", data);
         if (data.user) {
           toast({
             title: "Успешно!",
@@ -70,11 +78,20 @@ const Login = () => {
       }
     } catch (error: any) {
       console.error("Auth error:", error);
-      setError(error.message);
+      let errorMessage = error.message;
+      
+      // Улучшенная обработка ошибок
+      if (error.message.includes("Database error")) {
+        errorMessage = "Ошибка при создании профиля. Пожалуйста, попробуйте еще раз.";
+      } else if (error.message.includes("Invalid login credentials")) {
+        errorMessage = "Неверный email или пароль";
+      }
+      
+      setError(errorMessage);
       toast({
         variant: "destructive",
         title: "Ошибка",
-        description: error.message,
+        description: errorMessage,
       });
     } finally {
       setIsLoading(false);
