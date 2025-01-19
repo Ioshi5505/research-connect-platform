@@ -16,6 +16,7 @@ export const MobileMenu = ({ isEmployee }: MobileMenuProps) => {
   const mainMenuItems = [
     { path: "/", label: "Главная" },
     { path: "/events", label: "Мероприятия" },
+    { path: "/news", label: "Новости" },
   ];
 
   const resourcesMenuItems = [

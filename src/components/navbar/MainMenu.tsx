@@ -16,6 +16,7 @@ export const MainMenu = ({ isEmployee }: MainMenuProps) => {
   const mainMenuItems = [
     { path: "/", label: "Главная" },
     { path: "/events", label: "Мероприятия" },
+    { path: "/news", label: "Новости" },
   ];
 
   return (

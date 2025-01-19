@@ -34,6 +34,7 @@ function App() {
               <Route path="/contacts" element={<Contacts />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/user-management" element={<UserManagement />} />
+              <Route path="/news" element={<Index />} /> {/* Temporarily pointing to Index until News page is created */}
             </Routes>
           </BrowserRouter>
         </SessionContextProvider>
