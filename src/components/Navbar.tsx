@@ -49,6 +49,14 @@ export const Navbar = () => {
     { path: "/contacts", label: "Контакты" },
   ];
 
+  // Add employee section to main menu items if user is an employee
+  if (session && userProfile?.role === 'employee') {
+    mainMenuItems.push({
+      path: "/support",
+      label: "Полученные заявки",
+    });
+  }
+
   return (
     <nav className="bg-background border-b border-border">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
