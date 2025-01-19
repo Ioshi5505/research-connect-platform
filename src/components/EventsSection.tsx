@@ -1,5 +1,5 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Calendar, Trash2 } from "lucide-react";
+import { Calendar, Trash2, UserPlus } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -16,9 +16,8 @@ export const EventsSection = ({ hideAddButton }: EventsSectionProps) => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("events")
-        .select("*, profiles(role)")
-        .order("date", { ascending: true })
-        .limit(3);
+        .select("*, profiles(role), event_participants(user_id)")
+        .order("date", { ascending: true });
       
       if (error) throw error;
       return data;
@@ -52,6 +51,53 @@ export const EventsSection = ({ hideAddButton }: EventsSectionProps) => {
         description: "Не удалось удалить мероприятие",
       });
     }
+  };
+
+  const handleJoin = async (eventId: string) => {
+    try {
+      if (!session?.user?.id) {
+        toast({
+          variant: "destructive",
+          title: "Ошибка",
+          description: "Необходимо авторизоваться",
+        });
+        return;
+      }
+
+      const { error: joinError } = await supabase
+        .from("event_participants")
+        .insert({
+          event_id: eventId,
+          user_id: session.user.id,
+        });
+
+      if (joinError) throw joinError;
+
+      const { error: updateError } = await supabase
+        .from("events")
+        .update({ current_participants: events?.find(e => e.id === eventId)?.current_participants + 1 })
+        .eq("id", eventId);
+
+      if (updateError) throw updateError;
+
+      await queryClient.invalidateQueries({ queryKey: ["events"] });
+
+      toast({
+        title: "Успех",
+        description: "Вы успешно присоединились к мероприятию",
+      });
+    } catch (error) {
+      console.error("Error joining event:", error);
+      toast({
+        variant: "destructive",
+        title: "Ошибка",
+        description: "Не удалось присоединиться к мероприятию",
+      });
+    }
+  };
+
+  const isUserParticipant = (event: any) => {
+    return event.event_participants?.some((p: any) => p.user_id === session?.user?.id);
   };
 
   return (
@@ -100,6 +146,16 @@ export const EventsSection = ({ hideAddButton }: EventsSectionProps) => {
                       <p className="text-sm text-gray-500">
                         Участники: {event.current_participants} / {event.participants_limit}
                       </p>
+                    )}
+                    {session?.user?.id && !isUserParticipant(event) && (
+                      <Button
+                        onClick={() => handleJoin(event.id)}
+                        disabled={event.participants_limit && event.current_participants >= event.participants_limit}
+                        className="w-full"
+                      >
+                        <UserPlus className="h-4 w-4 mr-2" />
+                        Присоединиться
+                      </Button>
                     )}
                   </div>
                 </CardContent>
