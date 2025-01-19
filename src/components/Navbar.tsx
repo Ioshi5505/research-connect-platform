@@ -24,7 +24,7 @@ export const Navbar = () => {
         .from("profiles")
         .select("*")
         .eq("id", session.user.id)
-        .single();
+        .maybeSingle();
 
       if (error) throw error;
       return data;
