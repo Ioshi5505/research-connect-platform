@@ -314,12 +314,7 @@ export const SupportRequestForm = () => {
                   <FormLabel className="text-base">Выберите типы помощи</FormLabel>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
-                  {[
-                    { id: "editing", label: "Редактура" },
-                    { id: "formatting", label: "Оформление" },
-                    { id: "publication", label: "Публикация" },
-                    { id: "conference", label: "Подготовка к конференции" },
-                  ].map((item) => (
+                  {SUPPORT_TYPES.map((item) => (
                     <FormField
                       key={item.id}
                       control={form.control}
