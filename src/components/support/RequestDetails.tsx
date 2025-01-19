@@ -11,10 +11,22 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
 import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
+import { Trash2 } from "lucide-react";
 
 interface RequestDetailsProps {
   requestId: string;
@@ -56,6 +68,25 @@ export const RequestDetails = ({ requestId, onClose }: RequestDetailsProps) => {
         title: "Статус обновлен",
         description: "Статус заявки успешно обновлен",
       });
+    },
+  });
+
+  const deleteRequestMutation = useMutation({
+    mutationFn: async () => {
+      const { error } = await supabase
+        .from("support_requests")
+        .delete()
+        .eq("id", requestId);
+
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["support-requests"] });
+      toast({
+        title: "Заявка удалена",
+        description: "Заявка успешно удалена",
+      });
+      onClose();
     },
   });
 
@@ -103,19 +134,46 @@ export const RequestDetails = ({ requestId, onClose }: RequestDetailsProps) => {
             {format(new Date(request.created_at), "d MMMM yyyy", { locale: ru })}
           </p>
         </div>
-        <Select
-          value={request.status}
-          onValueChange={(value) => updateStatusMutation.mutate(value)}
-        >
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Статус" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="pending">Новая</SelectItem>
-            <SelectItem value="in_progress">В работе</SelectItem>
-            <SelectItem value="completed">Завершена</SelectItem>
-          </SelectContent>
-        </Select>
+        <div className="flex gap-2">
+          <Select
+            value={request.status}
+            onValueChange={(value) => updateStatusMutation.mutate(value)}
+          >
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Статус" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="pending">Новая</SelectItem>
+              <SelectItem value="in_progress">В работе</SelectItem>
+              <SelectItem value="completed">Завершена</SelectItem>
+            </SelectContent>
+          </Select>
+
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button variant="destructive" size="icon">
+                <Trash2 className="h-4 w-4" />
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Удалить заявку?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  Это действие нельзя отменить. Заявка будет удалена безвозвратно.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Отмена</AlertDialogCancel>
+                <AlertDialogAction
+                  onClick={() => deleteRequestMutation.mutate()}
+                  className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                >
+                  Удалить
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </div>
       </div>
 
       <ScrollArea className="flex-1">
