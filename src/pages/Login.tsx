@@ -7,18 +7,23 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useToast } from "@/hooks/use-toast";
 import { Navbar } from "@/components/Navbar";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isSignUp, setIsSignUp] = useState(false);
   const [role, setRole] = useState("student");
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const supabase = useSupabaseClient();
   const navigate = useNavigate();
   const { toast } = useToast();
 
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsLoading(true);
+    setError(null);
     
     try {
       if (isSignUp) {
@@ -32,13 +37,20 @@ const Login = () => {
           },
         });
 
-        if (error) throw error;
+        if (error) {
+          if (error.status === 429) {
+            throw new Error("Пожалуйста, подождите минуту перед следующей попыткой регистрации");
+          }
+          throw error;
+        }
 
         if (data.user) {
           toast({
             title: "Успешно!",
             description: "Проверьте вашу почту для подтверждения регистрации",
           });
+          setEmail("");
+          setPassword("");
         }
       } else {
         const { data, error } = await supabase.auth.signInWithPassword({
@@ -58,11 +70,14 @@ const Login = () => {
       }
     } catch (error: any) {
       console.error("Auth error:", error);
+      setError(error.message);
       toast({
         variant: "destructive",
         title: "Ошибка",
         description: error.message,
       });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -74,6 +89,12 @@ const Login = () => {
           {isSignUp ? "Регистрация" : "Вход"}
         </h1>
         
+        {error && (
+          <Alert variant="destructive" className="mb-6">
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
+        )}
+        
         <form onSubmit={handleAuth} className="space-y-6">
           <div className="space-y-2">
             <Label htmlFor="email">Email</Label>
@@ -84,6 +105,7 @@ const Login = () => {
               onChange={(e) => setEmail(e.target.value)}
               required
               placeholder="Введите email"
+              disabled={isLoading}
             />
           </div>
           
@@ -96,6 +118,7 @@ const Login = () => {
               onChange={(e) => setPassword(e.target.value)}
               required
               placeholder="Введите пароль"
+              disabled={isLoading}
             />
           </div>
 
@@ -106,6 +129,7 @@ const Login = () => {
                 value={role}
                 onValueChange={setRole}
                 className="flex flex-col space-y-2"
+                disabled={isLoading}
               >
                 <div className="flex items-center space-x-2">
                   <RadioGroupItem value="student" id="student" />
@@ -119,16 +143,20 @@ const Login = () => {
             </div>
           )}
 
-          <Button type="submit" className="w-full">
-            {isSignUp ? "Зарегистрироваться" : "Войти"}
+          <Button type="submit" className="w-full" disabled={isLoading}>
+            {isLoading ? "Загрузка..." : isSignUp ? "Зарегистрироваться" : "Войти"}
           </Button>
         </form>
 
         <div className="mt-4 text-center">
           <Button
             variant="link"
-            onClick={() => setIsSignUp(!isSignUp)}
+            onClick={() => {
+              setIsSignUp(!isSignUp);
+              setError(null);
+            }}
             className="text-primary"
+            disabled={isLoading}
           >
             {isSignUp
               ? "Уже есть аккаунт? Войти"
