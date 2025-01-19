@@ -34,7 +34,6 @@ const Support = () => {
   });
 
   const isEmployee = profile?.role === "employee";
-  const isStudent = profile?.role === "student";
 
   useEffect(() => {
     if (!session) {
@@ -53,7 +52,7 @@ const Support = () => {
     );
   }
 
-  if (!isEmployee && !isStudent) {
+  if (!session) {
     return (
       <div className="min-h-screen">
         <Navbar />
@@ -61,7 +60,7 @@ const Support = () => {
           <Alert variant="destructive">
             <AlertCircle className="h-4 w-4" />
             <AlertDescription>
-              У вас нет доступа к этому разделу
+              Пожалуйста, войдите в систему
             </AlertDescription>
           </Alert>
         </div>
@@ -77,11 +76,7 @@ const Support = () => {
           {isEmployee ? "Полученные заявки" : "Заявка на сопровождение"}
         </h1>
         <div className="bg-card p-6 rounded-lg shadow">
-          {isEmployee ? (
-            <EmployeeRequestsSection />
-          ) : isStudent ? (
-            <SupportRequestForm />
-          ) : null}
+          {isEmployee ? <EmployeeRequestsSection /> : <SupportRequestForm />}
         </div>
       </div>
     </div>
