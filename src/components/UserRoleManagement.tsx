@@ -40,23 +40,22 @@ export const UserRoleManagement = () => {
       }
 
       // Get user emails from auth.users through RPC function
-      // We'll need to create this function in Supabase
       const { data: usersData, error: usersError } = await supabase
         .rpc('get_user_emails', {
-          user_ids: profiles.map(p => p.id)
+          user_ids: profiles.map((p: Profile) => p.id)
         });
 
       if (usersError) {
         console.error("Error fetching user emails:", usersError);
         // Continue without emails if there's an error
-        return profiles.map(profile => ({
+        return profiles.map((profile: Profile) => ({
           ...profile,
           email: undefined
         }));
       }
 
       // Combine profiles with emails
-      const profilesWithEmails = profiles.map(profile => ({
+      const profilesWithEmails = profiles.map((profile: Profile) => ({
         ...profile,
         email: usersData?.find(u => u.id === profile.id)?.email
       }));
