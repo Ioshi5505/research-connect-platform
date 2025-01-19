@@ -89,6 +89,41 @@ export type Database = {
           },
         ]
       }
+      news: {
+        Row: {
+          author_id: string
+          content: string
+          created_at: string
+          id: string
+          image_url: string | null
+          title: string
+        }
+        Insert: {
+          author_id: string
+          content: string
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          title: string
+        }
+        Update: {
+          author_id?: string
+          content?: string
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "news_author_id_fkey"
+            columns: ["author_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           created_at: string
