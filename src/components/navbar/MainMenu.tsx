@@ -16,14 +16,8 @@ export const MainMenu = ({ isEmployee }: MainMenuProps) => {
   const mainMenuItems = [
     { path: "/", label: "Главная" },
     { path: "/events", label: "Мероприятия" },
+    { path: "/support", label: "Полученные заявки" },
   ];
-
-  if (isEmployee) {
-    mainMenuItems.push({
-      path: "/support",
-      label: "Полученные заявки",
-    });
-  }
 
   return (
     <DropdownMenu>

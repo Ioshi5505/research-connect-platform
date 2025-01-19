@@ -16,6 +16,7 @@ export const MobileMenu = ({ isEmployee }: MobileMenuProps) => {
   const mainMenuItems = [
     { path: "/", label: "Главная" },
     { path: "/events", label: "Мероприятия" },
+    { path: "/support", label: "Полученные заявки" },
   ];
 
   const resourcesMenuItems = [
@@ -24,13 +25,6 @@ export const MobileMenu = ({ isEmployee }: MobileMenuProps) => {
     { path: "/support", label: "Заявка на сопровождение" },
     { path: "/contacts", label: "Контакты" },
   ];
-
-  if (isEmployee) {
-    mainMenuItems.push({
-      path: "/support",
-      label: "Полученные заявки",
-    });
-  }
 
   return (
     <div className="md:hidden flex items-center ml-2">
