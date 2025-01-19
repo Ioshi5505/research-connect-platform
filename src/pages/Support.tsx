@@ -4,9 +4,14 @@ import { EmployeeRequestsSection } from "@/components/support/EmployeeRequestsSe
 import { useSession } from "@supabase/auth-helpers-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { AlertCircle } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 const Support = () => {
   const session = useSession();
+  const navigate = useNavigate();
 
   const { data: profile, isLoading } = useQuery({
     queryKey: ["profile", session?.user?.id],
@@ -22,12 +27,20 @@ const Support = () => {
         console.error("Error fetching profile:", error);
         throw error;
       }
+      console.log("Profile data:", data);
       return data;
     },
     enabled: !!session?.user?.id,
   });
 
   const isEmployee = profile?.role === "employee";
+  const isStudent = profile?.role === "student";
+
+  useEffect(() => {
+    if (!session) {
+      navigate("/login");
+    }
+  }, [session, navigate]);
 
   if (isLoading) {
     return (
@@ -40,15 +53,35 @@ const Support = () => {
     );
   }
 
+  if (!isEmployee && !isStudent) {
+    return (
+      <div className="min-h-screen">
+        <Navbar />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <Alert variant="destructive">
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription>
+              У вас нет доступа к этому разделу
+            </AlertDescription>
+          </Alert>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen">
       <Navbar />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <h1 className="text-3xl font-bold mb-6">
-          {isEmployee ? "Заявки на сопровождение" : "Заявка на сопровождение"}
+          {isEmployee ? "Полученные заявки" : "Заявка на сопровождение"}
         </h1>
         <div className="bg-card p-6 rounded-lg shadow">
-          {isEmployee ? <EmployeeRequestsSection /> : <SupportRequestForm />}
+          {isEmployee ? (
+            <EmployeeRequestsSection />
+          ) : isStudent ? (
+            <SupportRequestForm />
+          ) : null}
         </div>
       </div>
     </div>

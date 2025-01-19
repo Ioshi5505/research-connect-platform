@@ -19,13 +19,24 @@ export const UserMenu = ({ session, isEmployee }: UserMenuProps) => {
 
   return (
     <div className="flex items-center space-x-4">
-      <Link 
-        to="/support" 
-        className="flex items-center gap-2 text-foreground hover:text-accent transition-colors"
-      >
-        <Inbox className="h-4 w-4" />
-        <span className="hidden sm:inline">Полученные заявки</span>
-      </Link>
+      {isEmployee && (
+        <Link 
+          to="/support" 
+          className="flex items-center gap-2 text-foreground hover:text-accent transition-colors"
+        >
+          <Inbox className="h-4 w-4" />
+          <span className="hidden sm:inline">Полученные заявки</span>
+        </Link>
+      )}
+      {!isEmployee && session && (
+        <Link 
+          to="/support" 
+          className="flex items-center gap-2 text-foreground hover:text-accent transition-colors"
+        >
+          <Inbox className="h-4 w-4" />
+          <span className="hidden sm:inline">Заявка на сопровождение</span>
+        </Link>
+      )}
       {session ? (
         <>
           <Link 
