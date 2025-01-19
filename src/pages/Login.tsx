@@ -22,35 +22,39 @@ const Login = () => {
     
     try {
       if (isSignUp) {
-        const { error } = await supabase.auth.signUp({
+        const { data, error } = await supabase.auth.signUp({
           email,
           password,
           options: {
             data: {
-              role: role, // Передаем выбранную роль
+              role: role,
             },
           },
         });
 
         if (error) throw error;
 
-        toast({
-          title: "Успешно!",
-          description: "Проверьте вашу почту для подтверждения регистрации",
-        });
+        if (data.user) {
+          toast({
+            title: "Успешно!",
+            description: "Проверьте вашу почту для подтверждения регистрации",
+          });
+        }
       } else {
-        const { error } = await supabase.auth.signInWithPassword({
+        const { data, error } = await supabase.auth.signInWithPassword({
           email,
           password,
         });
 
         if (error) throw error;
 
-        toast({
-          title: "Успешно!",
-          description: "Вы вошли в систему",
-        });
-        navigate("/");
+        if (data.user) {
+          toast({
+            title: "Успешно!",
+            description: "Вы вошли в систему",
+          });
+          navigate("/");
+        }
       }
     } catch (error: any) {
       console.error("Auth error:", error);
