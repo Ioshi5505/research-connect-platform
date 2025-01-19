@@ -17,6 +17,8 @@ export const UserMenu = ({ session, isEmployee }: UserMenuProps) => {
     navigate('/login');
   };
 
+  console.log("UserMenu - isEmployee:", isEmployee); // Debug log
+
   return (
     <div className="flex items-center space-x-4">
       {isEmployee && (

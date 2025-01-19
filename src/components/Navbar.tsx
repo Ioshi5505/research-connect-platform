@@ -14,6 +14,8 @@ export const Navbar = () => {
     queryKey: ["user-role", session?.user?.id],
     queryFn: async () => {
       if (!session?.user?.id) return null;
+      
+      console.log("Fetching user role for:", session.user.id);
       const { data, error } = await supabase
         .from("profiles")
         .select("role")

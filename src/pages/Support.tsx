@@ -17,6 +17,8 @@ const Support = () => {
     queryKey: ["profile", session?.user?.id],
     queryFn: async () => {
       if (!session?.user?.id) return null;
+      
+      console.log("Fetching profile for user:", session.user.id);
       const { data, error } = await supabase
         .from("profiles")
         .select("*")
@@ -27,6 +29,7 @@ const Support = () => {
         console.error("Error fetching profile:", error);
         throw error;
       }
+      
       console.log("Profile data:", data);
       return data;
     },
@@ -34,6 +37,7 @@ const Support = () => {
   });
 
   const isEmployee = profile?.role === "employee";
+  console.log("Is employee:", isEmployee);
 
   useEffect(() => {
     if (!session) {
