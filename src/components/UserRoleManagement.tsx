@@ -21,18 +21,18 @@ export const UserRoleManagement = () => {
     queryKey: ["profiles"],
     queryFn: async () => {
       console.log("Fetching profiles...");
-      const { data, error } = await supabase
+      const { data: profiles, error: profilesError } = await supabase
         .from("profiles")
-        .select("*")
+        .select("*, auth_users:id(email)")
         .order("created_at", { ascending: false });
 
-      if (error) {
-        console.error("Error fetching profiles:", error);
-        throw error;
+      if (profilesError) {
+        console.error("Error fetching profiles:", profilesError);
+        throw profilesError;
       }
 
-      console.log("Fetched profiles:", data);
-      return data;
+      console.log("Fetched profiles:", profiles);
+      return profiles;
     },
   });
 
@@ -88,7 +88,8 @@ export const UserRoleManagement = () => {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>ID пользователя</TableHead>
+            <TableHead>Email</TableHead>
+            <TableHead>Дата регистрации</TableHead>
             <TableHead>Текущая роль</TableHead>
             <TableHead>Действия</TableHead>
           </TableRow>
@@ -96,8 +97,13 @@ export const UserRoleManagement = () => {
         <TableBody>
           {users?.map((user) => (
             <TableRow key={user.id}>
-              <TableCell>{user.id}</TableCell>
-              <TableCell>{user.role === "employee" ? "Сотрудник" : "Студент"}</TableCell>
+              <TableCell>{user.auth_users?.email}</TableCell>
+              <TableCell>{new Date(user.created_at).toLocaleDateString()}</TableCell>
+              <TableCell>
+                <span className={user.role === "employee" ? "text-green-600" : "text-blue-600"}>
+                  {user.role === "employee" ? "Сотрудник" : "Студент"}
+                </span>
+              </TableCell>
               <TableCell>
                 <Button
                   variant="outline"

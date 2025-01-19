@@ -6,7 +6,6 @@ import { AboutSection } from "@/components/AboutSection";
 import { Navbar } from "@/components/Navbar";
 import { EventsCarousel } from "@/components/EventsCarousel";
 import { Footer } from "@/components/Footer";
-import { UserRoleManagement } from "@/components/UserRoleManagement";
 
 const Index = () => {
   const session = useSession();
@@ -34,8 +33,6 @@ const Index = () => {
     enabled: !!session?.user?.id,
   });
 
-  const isEmployee = userRole === 'employee';
-
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
@@ -47,13 +44,6 @@ const Index = () => {
           <EventsCarousel />
         </div>
       </section>
-      {isEmployee && (
-        <section className="py-16">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <UserRoleManagement />
-          </div>
-        </section>
-      )}
       <Footer />
     </div>
   );

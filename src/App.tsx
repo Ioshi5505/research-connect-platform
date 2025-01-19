@@ -10,6 +10,7 @@ import Documents from "./pages/Documents";
 import Support from "./pages/Support";
 import Contacts from "./pages/Contacts";
 import Profile from "./pages/Profile";
+import UserManagement from "./pages/UserManagement";
 import { supabase } from "./integrations/supabase/client";
 import { ChatWidget } from "./components/ChatWidget";
 import "./App.css";
@@ -32,6 +33,7 @@ function App() {
               <Route path="/support" element={<Support />} />
               <Route path="/contacts" element={<Contacts />} />
               <Route path="/profile" element={<Profile />} />
+              <Route path="/user-management" element={<UserManagement />} />
             </Routes>
           </BrowserRouter>
         </SessionContextProvider>
