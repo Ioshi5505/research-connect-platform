@@ -24,6 +24,16 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { useNavigate } from "react-router-dom";
 
+// Define support types as a const array to ensure type safety
+const SUPPORT_TYPES = [
+  { id: "editing" as const, label: "Редактура" },
+  { id: "formatting" as const, label: "Оформление" },
+  { id: "publication" as const, label: "Публикация" },
+  { id: "conference" as const, label: "Подготовка к конференции" },
+] as const;
+
+type SupportType = typeof SUPPORT_TYPES[number]['id'];
+
 const formSchema = z.object({
   fullName: z.string().min(1, "ФИО обязательно"),
   email: z.string().email("Введите корректный email"),
@@ -38,7 +48,7 @@ const formSchema = z.object({
   workStage: z.enum(["idea", "draft", "complete"], {
     required_error: "Выберите стадию готовности",
   }),
-  supportTypes: z.array(z.string()).min(1, "Выберите хотя бы один тип помощи"),
+  supportTypes: z.array(z.enum(["editing", "formatting", "publication", "conference"] as const)).min(1, "Выберите хотя бы один тип помощи"),
   desiredDeadline: z.string().min(1, "Укажите желаемый срок"),
   specialRequirements: z.string().optional(),
   file: z.instanceof(FileList).optional(),
