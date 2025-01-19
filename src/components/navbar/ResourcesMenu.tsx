@@ -12,7 +12,6 @@ export const ResourcesMenu = () => {
   const resourcesMenuItems = [
     { path: "/council", label: "Управляющий совет" },
     { path: "/documents", label: "Документы" },
-    { path: "/support", label: "Заявка на сопровождение" },
     { path: "/contacts", label: "Контакты" },
   ];
 
