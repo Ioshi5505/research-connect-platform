@@ -6,6 +6,8 @@ import { RequestCard } from "./RequestCard";
 import { RequestDetails } from "./RequestDetails";
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { AlertCircle } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 export const EmployeeRequestsSection = () => {
   const session = useSession();
@@ -30,54 +32,63 @@ export const EmployeeRequestsSection = () => {
     return <div>Загрузка заявок...</div>;
   }
 
+  const NoRequestsAlert = () => (
+    <Alert>
+      <AlertCircle className="h-4 w-4" />
+      <AlertDescription>
+        В настоящее время заявки отсутствуют
+      </AlertDescription>
+    </Alert>
+  );
+
+  const renderRequestsList = (filteredRequests: any[]) => {
+    if (filteredRequests.length === 0) {
+      return <NoRequestsAlert />;
+    }
+
+    return (
+      <ScrollArea className="h-[600px]">
+        {filteredRequests.map((request) => (
+          <RequestCard
+            key={request.id}
+            request={request}
+            isSelected={selectedRequest === request.id}
+            onClick={() => setSelectedRequest(request.id)}
+          />
+        ))}
+      </ScrollArea>
+    );
+  };
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
       <div className="md:col-span-1 space-y-4">
         <Tabs defaultValue="all" className="w-full">
           <TabsList className="w-full">
-            <TabsTrigger value="all" className="flex-1">Все</TabsTrigger>
-            <TabsTrigger value="pending" className="flex-1">Новые</TabsTrigger>
-            <TabsTrigger value="inProgress" className="flex-1">В работе</TabsTrigger>
+            <TabsTrigger value="all" className="flex-1">
+              Все
+            </TabsTrigger>
+            <TabsTrigger value="pending" className="flex-1">
+              Новые
+            </TabsTrigger>
+            <TabsTrigger value="in_progress" className="flex-1">
+              В работе
+            </TabsTrigger>
           </TabsList>
           <TabsContent value="all">
-            <ScrollArea className="h-[600px]">
-              {requests?.map((request) => (
-                <RequestCard
-                  key={request.id}
-                  request={request}
-                  isSelected={selectedRequest === request.id}
-                  onClick={() => setSelectedRequest(request.id)}
-                />
-              ))}
-            </ScrollArea>
+            {renderRequestsList(requests || [])}
           </TabsContent>
           <TabsContent value="pending">
-            <ScrollArea className="h-[600px]">
-              {requests
-                ?.filter((request) => request.status === "pending")
-                .map((request) => (
-                  <RequestCard
-                    key={request.id}
-                    request={request}
-                    isSelected={selectedRequest === request.id}
-                    onClick={() => setSelectedRequest(request.id)}
-                  />
-                ))}
-            </ScrollArea>
+            {renderRequestsList(
+              (requests || []).filter((request) => request.status === "pending")
+            )}
           </TabsContent>
-          <TabsContent value="inProgress">
-            <ScrollArea className="h-[600px]">
-              {requests
-                ?.filter((request) => request.status === "in_progress")
-                .map((request) => (
-                  <RequestCard
-                    key={request.id}
-                    request={request}
-                    isSelected={selectedRequest === request.id}
-                    onClick={() => setSelectedRequest(request.id)}
-                  />
-                ))}
-            </ScrollArea>
+          <TabsContent value="in_progress">
+            {renderRequestsList(
+              (requests || []).filter(
+                (request) => request.status === "in_progress"
+              )
+            )}
           </TabsContent>
         </Tabs>
       </div>

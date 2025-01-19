@@ -32,15 +32,30 @@ export const RequestCard = ({ request, isSelected, onClick }: RequestCardProps) 
     >
       <div className="space-y-2">
         <div className="flex justify-between items-start">
-          <h3 className="font-medium truncate">{request.title}</h3>
+          <div>
+            <h3 className="font-medium truncate">{request.title}</h3>
+            <p className="text-xs text-muted-foreground">
+              №{request.id.slice(0, 8)}
+            </p>
+          </div>
           {getStatusBadge(request.status)}
         </div>
         <div className="text-sm text-muted-foreground">
           <p>{request.full_name}</p>
-          <p>{request.faculty}</p>
+          <p>
+            {request.faculty}, {request.course} курс
+          </p>
+          <p className="text-xs">{request.work_type}</p>
         </div>
-        <div className="text-xs text-muted-foreground">
-          {format(new Date(request.created_at), "d MMMM yyyy", { locale: ru })}
+        <div className="text-xs text-muted-foreground flex justify-between items-center">
+          <span>
+            {format(new Date(request.created_at), "d MMMM yyyy", { locale: ru })}
+          </span>
+          {request.assigned_to && (
+            <Badge variant="outline" className="text-xs">
+              Назначено
+            </Badge>
+          )}
         </div>
       </div>
     </Card>
