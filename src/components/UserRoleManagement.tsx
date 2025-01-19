@@ -12,6 +12,15 @@ import {
 } from "@/components/ui/table";
 import { useToast } from "@/components/ui/use-toast";
 
+type Profile = {
+  id: string;
+  role: "student" | "employee";
+  created_at: string;
+  auth_users: {
+    email: string;
+  } | null;
+};
+
 export const UserRoleManagement = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -23,7 +32,12 @@ export const UserRoleManagement = () => {
       console.log("Fetching profiles...");
       const { data: profiles, error: profilesError } = await supabase
         .from("profiles")
-        .select("*, auth_users:id(email)")
+        .select(`
+          *,
+          auth_users:id(
+            email
+          )
+        `)
         .order("created_at", { ascending: false });
 
       if (profilesError) {
@@ -32,7 +46,7 @@ export const UserRoleManagement = () => {
       }
 
       console.log("Fetched profiles:", profiles);
-      return profiles;
+      return profiles as Profile[];
     },
   });
 
