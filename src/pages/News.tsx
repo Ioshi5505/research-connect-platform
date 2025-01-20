@@ -54,7 +54,7 @@ const News = () => {
                 Произошла ошибка при загрузке новостей. Пожалуйста, попробуйте позже.
               </div>
             ) : (
-              <NewsCarousel news={news || []} />
+              <NewsCarousel news={news || []} showDeleteButton />
             )}
           </section>
         </div>
