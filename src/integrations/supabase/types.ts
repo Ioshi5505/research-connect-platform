@@ -11,21 +11,36 @@ export type Database = {
     Tables: {
       event_participants: {
         Row: {
+          course: number
           created_at: string
+          degree_type: string
+          education_form: string
           event_id: string | null
+          full_name: string
           id: string
+          study_group: string
           user_id: string | null
         }
         Insert: {
+          course?: number
           created_at?: string
+          degree_type?: string
+          education_form?: string
           event_id?: string | null
+          full_name?: string
           id?: string
+          study_group?: string
           user_id?: string | null
         }
         Update: {
+          course?: number
           created_at?: string
+          degree_type?: string
+          education_form?: string
           event_id?: string | null
+          full_name?: string
           id?: string
+          study_group?: string
           user_id?: string | null
         }
         Relationships: [

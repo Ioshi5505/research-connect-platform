@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { Loader2, UserPlus } from "lucide-react";
@@ -13,6 +13,7 @@ const EventArticle = () => {
   const { id } = useParams();
   const session = useSession();
   const { toast } = useToast();
+  const navigate = useNavigate();
   console.log('Fetching event with id:', id);
 
   const { data: event, isLoading, error, refetch } = useQuery({
@@ -35,39 +36,17 @@ const EventArticle = () => {
     enabled: !!id,
   });
 
-  const handleJoin = async () => {
-    try {
-      if (!session?.user?.id) {
-        toast({
-          variant: "destructive",
-          title: "Ошибка",
-          description: "Необходимо авторизоваться",
-        });
-        return;
-      }
-
-      const { error: joinError } = await supabase
-        .from("event_participants")
-        .insert({
-          event_id: id,
-          user_id: session.user.id,
-        });
-
-      if (joinError) throw joinError;
-
-      toast({
-        title: "Успех",
-        description: "Вы успешно присоединились к мероприятию",
-      });
-      refetch();
-    } catch (error) {
-      console.error("Error joining event:", error);
+  const handleJoin = () => {
+    if (!session?.user) {
       toast({
         variant: "destructive",
         title: "Ошибка",
-        description: "Не удалось присоединиться к мероприятию",
+        description: "Необходимо авторизоваться",
       });
+      return;
     }
+
+    navigate(`/join-event/${id}`);
   };
 
   const isUserParticipant = event?.event_participants?.some(
