@@ -14,6 +14,7 @@ import UserManagement from "./pages/UserManagement";
 import News from "./pages/News";
 import NewsArticle from "./pages/NewsArticle";
 import EventArticle from "./pages/EventArticle";
+import JoinEvent from "./pages/JoinEvent";
 import { supabase } from "./integrations/supabase/client";
 import { ChatWidget } from "./components/ChatWidget";
 import "./App.css";
@@ -31,6 +32,7 @@ function App() {
               <Route path="/" element={<Index />} />
               <Route path="/events" element={<Events />} />
               <Route path="/events/:id" element={<EventArticle />} />
+              <Route path="/join-event/:id" element={<JoinEvent />} />
               <Route path="/login" element={<Login />} />
               <Route path="/council" element={<Council />} />
               <Route path="/documents" element={<Documents />} />
