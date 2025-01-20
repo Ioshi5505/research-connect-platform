@@ -24,7 +24,7 @@ interface NewsCarouselProps {
 export const NewsCarousel = ({ news }: NewsCarouselProps) => {
   console.log('Rendering NewsCarousel with news:', news);
 
-  if (!news.length) {
+  if (!news || news.length === 0) {
     return (
       <div className="text-center py-12 text-gray-500">
         Нет доступных новостей
