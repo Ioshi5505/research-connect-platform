@@ -1,4 +1,4 @@
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { Calendar, Trash2, UserPlus } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -11,7 +11,7 @@ interface EventsSectionProps {
 }
 
 export const EventsSection = ({ hideAddButton }: EventsSectionProps) => {
-  const { data: events, isLoading } = useQuery({
+  const { data: events, isLoading, refetch } = useQuery({
     queryKey: ["events"],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -26,7 +26,6 @@ export const EventsSection = ({ hideAddButton }: EventsSectionProps) => {
 
   const session = useSession();
   const { toast } = useToast();
-  const queryClient = useQueryClient();
 
   const handleDelete = async (eventId: string) => {
     try {
@@ -37,12 +36,11 @@ export const EventsSection = ({ hideAddButton }: EventsSectionProps) => {
 
       if (error) throw error;
 
-      await queryClient.invalidateQueries({ queryKey: ["events"] });
-
       toast({
         title: "Успех",
         description: "Мероприятие успешно удалено",
       });
+      refetch();
     } catch (error) {
       console.error("Error deleting event:", error);
       toast({
@@ -73,14 +71,7 @@ export const EventsSection = ({ hideAddButton }: EventsSectionProps) => {
 
       if (joinError) throw joinError;
 
-      const { error: updateError } = await supabase
-        .from("events")
-        .update({ current_participants: events?.find(e => e.id === eventId)?.current_participants + 1 })
-        .eq("id", eventId);
-
-      if (updateError) throw updateError;
-
-      await queryClient.invalidateQueries({ queryKey: ["events"] });
+      await refetch();
 
       toast({
         title: "Успех",
@@ -100,6 +91,10 @@ export const EventsSection = ({ hideAddButton }: EventsSectionProps) => {
     return event.event_participants?.some((p: any) => p.user_id === session?.user?.id);
   };
 
+  const isEmployee = (event: any) => {
+    return event.profiles?.role === 'employee' && event.author_id === session?.user?.id;
+  };
+
   return (
     <section className="py-16 bg-gradient-to-r from-primary/5 to-primary/10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -116,7 +111,7 @@ export const EventsSection = ({ hideAddButton }: EventsSectionProps) => {
               <Card key={event.id} className="hover:shadow-lg transition-shadow">
                 <CardHeader className="flex flex-row items-start justify-between space-y-0">
                   <CardTitle className="text-xl">{event.title}</CardTitle>
-                  {session?.user?.id === event.author_id && event.profiles?.role === 'employee' && (
+                  {isEmployee(event) && (
                     <Button
                       variant="ghost"
                       size="icon"

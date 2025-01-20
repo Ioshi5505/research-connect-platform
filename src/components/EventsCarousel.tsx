@@ -17,7 +17,7 @@ export const EventsCarousel = () => {
   const session = useSession();
   const { toast } = useToast();
 
-  const { data: events, isLoading } = useQuery({
+  const { data: events, isLoading, refetch } = useQuery({
     queryKey: ["recent-events"],
     queryFn: async () => {
       const twoMonthsAgo = new Date();
@@ -59,6 +59,7 @@ export const EventsCarousel = () => {
         title: "Успех",
         description: "Вы успешно присоединились к мероприятию",
       });
+      refetch();
     } catch (error) {
       console.error("Error joining event:", error);
       toast({
@@ -82,6 +83,7 @@ export const EventsCarousel = () => {
         title: "Успех",
         description: "Мероприятие успешно удалено",
       });
+      refetch();
     } catch (error) {
       console.error("Error deleting event:", error);
       toast({
