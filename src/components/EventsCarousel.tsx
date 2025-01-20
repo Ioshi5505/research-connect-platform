@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/carousel";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Pencil, Trash2, UserPlus } from "lucide-react";
+import { Pencil, Trash2, UserPlus, Users } from "lucide-react";
 import { useSession } from "@supabase/auth-helpers-react";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
@@ -48,20 +48,7 @@ export const EventsCarousel = () => {
         return;
       }
 
-      const { error: joinError } = await supabase
-        .from("event_participants")
-        .insert({
-          event_id: eventId,
-          user_id: session.user.id,
-        });
-
-      if (joinError) throw joinError;
-
-      toast({
-        title: "Успех",
-        description: "Вы успешно присоединились к мероприятию",
-      });
-      refetch();
+      navigate(`/join-event/${eventId}`);
     } catch (error) {
       console.error("Error joining event:", error);
       toast({
@@ -154,9 +141,10 @@ export const EventsCarousel = () => {
                       <Button
                         variant="outline"
                         className="flex-1"
+                        onClick={() => navigate(`/event-participants/${event.id}`)}
                       >
-                        <Pencil className="h-4 w-4 mr-2" />
-                        Изменить
+                        <Users className="h-4 w-4 mr-2" />
+                        Участники
                       </Button>
                     </div>
                   ) : (

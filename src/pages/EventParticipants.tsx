@@ -1,0 +1,93 @@
+import { useParams } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { Loader2 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { Navbar } from "@/components/Navbar";
+import { Footer } from "@/components/Footer";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+
+const EventParticipants = () => {
+  const { id } = useParams();
+  console.log("Fetching participants for event:", id);
+
+  const { data: eventData, isLoading: eventLoading } = useQuery({
+    queryKey: ["event", id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("events")
+        .select("title")
+        .eq("id", id)
+        .single();
+
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  const { data: participants, isLoading: participantsLoading } = useQuery({
+    queryKey: ["event-participants", id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("event_participants")
+        .select("*")
+        .eq("event_id", id);
+
+      if (error) throw error;
+      console.log("Fetched participants:", data);
+      return data;
+    },
+  });
+
+  const isLoading = eventLoading || participantsLoading;
+
+  return (
+    <div className="min-h-screen flex flex-col">
+      <Navbar />
+      <main className="flex-grow container mx-auto px-4 py-8">
+        {isLoading ? (
+          <div className="flex justify-center items-center h-64">
+            <Loader2 className="h-8 w-8 animate-spin" />
+          </div>
+        ) : (
+          <div className="max-w-4xl mx-auto">
+            <h1 className="text-3xl font-bold mb-6">
+              Участники мероприятия: {eventData?.title}
+            </h1>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>ФИО</TableHead>
+                  <TableHead>Курс</TableHead>
+                  <TableHead>Группа</TableHead>
+                  <TableHead>Форма обучения</TableHead>
+                  <TableHead>Степень образования</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {participants?.map((participant) => (
+                  <TableRow key={participant.id}>
+                    <TableCell>{participant.full_name}</TableCell>
+                    <TableCell>{participant.course}</TableCell>
+                    <TableCell>{participant.study_group}</TableCell>
+                    <TableCell>{participant.education_form}</TableCell>
+                    <TableCell>{participant.degree_type}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        )}
+      </main>
+      <Footer />
+    </div>
+  );
+};
+
+export default EventParticipants;
