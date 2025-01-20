@@ -12,10 +12,12 @@ import { Button } from "@/components/ui/button";
 import { Pencil, Trash2, UserPlus } from "lucide-react";
 import { useSession } from "@supabase/auth-helpers-react";
 import { useToast } from "@/hooks/use-toast";
+import { useNavigate } from "react-router-dom";
 
 export const EventsCarousel = () => {
   const session = useSession();
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const { data: events, isLoading, refetch } = useQuery({
     queryKey: ["recent-events"],
@@ -113,7 +115,7 @@ export const EventsCarousel = () => {
               <CardHeader>
                 <CardTitle className="text-xl line-clamp-2">{event.title}</CardTitle>
               </CardHeader>
-              <CardContent>
+              <CardContent className="flex flex-col h-full">
                 {event.image_url && (
                   <div className="mb-4">
                     <img
@@ -123,8 +125,8 @@ export const EventsCarousel = () => {
                     />
                   </div>
                 )}
-                <p className="text-gray-600 line-clamp-3">{event.description}</p>
-                <p className="text-sm font-semibold text-primary mt-4">
+                <p className="text-gray-600 line-clamp-3 mb-4">{event.description}</p>
+                <p className="text-sm font-semibold text-primary">
                   {new Date(event.date).toLocaleDateString("ru-RU")}
                 </p>
                 {event.participants_limit && (
@@ -132,36 +134,43 @@ export const EventsCarousel = () => {
                     Участники: {event.current_participants} / {event.participants_limit}
                   </p>
                 )}
-                {isEmployee(event) ? (
-                  <div className="flex gap-2 mt-4">
-                    <Button
-                      variant="outline"
-                      className="flex-1"
-                      onClick={() => handleDelete(event.id)}
-                    >
-                      <Trash2 className="h-4 w-4 mr-2" />
-                      Удалить
-                    </Button>
-                    <Button
-                      variant="outline"
-                      className="flex-1"
-                    >
-                      <Pencil className="h-4 w-4 mr-2" />
-                      Изменить
-                    </Button>
-                  </div>
-                ) : (
-                  session?.user?.id && !isUserParticipant(event) && (
-                    <Button
-                      onClick={() => handleJoin(event.id)}
-                      disabled={event.participants_limit && event.current_participants >= event.participants_limit}
-                      className="w-full mt-4"
-                    >
-                      <UserPlus className="h-4 w-4 mr-2" />
-                      Присоединиться
-                    </Button>
-                  )
-                )}
+                <div className="flex flex-col gap-2 mt-auto pt-4">
+                  <Button
+                    variant="outline"
+                    onClick={() => navigate(`/events/${event.id}`)}
+                  >
+                    Подробнее
+                  </Button>
+                  {isEmployee(event) ? (
+                    <div className="flex gap-2">
+                      <Button
+                        variant="outline"
+                        className="flex-1"
+                        onClick={() => handleDelete(event.id)}
+                      >
+                        <Trash2 className="h-4 w-4 mr-2" />
+                        Удалить
+                      </Button>
+                      <Button
+                        variant="outline"
+                        className="flex-1"
+                      >
+                        <Pencil className="h-4 w-4 mr-2" />
+                        Изменить
+                      </Button>
+                    </div>
+                  ) : (
+                    session?.user?.id && !isUserParticipant(event) && (
+                      <Button
+                        onClick={() => handleJoin(event.id)}
+                        disabled={event.participants_limit && event.current_participants >= event.participants_limit}
+                      >
+                        <UserPlus className="h-4 w-4 mr-2" />
+                        Присоединиться
+                      </Button>
+                    )
+                  )}
+                </div>
               </CardContent>
             </Card>
           </CarouselItem>
