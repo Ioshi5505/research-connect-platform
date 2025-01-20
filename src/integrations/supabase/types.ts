@@ -96,6 +96,7 @@ export type Database = {
           created_at: string
           id: string
           image_url: string | null
+          published: boolean
           title: string
         }
         Insert: {
@@ -104,6 +105,7 @@ export type Database = {
           created_at?: string
           id?: string
           image_url?: string | null
+          published?: boolean
           title: string
         }
         Update: {
@@ -112,6 +114,7 @@ export type Database = {
           created_at?: string
           id?: string
           image_url?: string | null
+          published?: boolean
           title?: string
         }
         Relationships: [

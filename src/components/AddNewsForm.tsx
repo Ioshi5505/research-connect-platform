@@ -15,11 +15,13 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { Switch } from "@/components/ui/switch";
 
 interface NewsFormData {
   title: string;
   content: string;
   image?: FileList;
+  published: boolean;
 }
 
 export const AddNewsForm = () => {
@@ -31,6 +33,7 @@ export const AddNewsForm = () => {
     defaultValues: {
       title: "",
       content: "",
+      published: false,
     },
   });
 
@@ -65,6 +68,7 @@ export const AddNewsForm = () => {
           content: data.content,
           image_url: imageUrl,
           author_id: session.user.id,
+          published: data.published,
         });
 
       if (error) throw error;
@@ -140,6 +144,26 @@ export const AddNewsForm = () => {
                 />
               </FormControl>
               <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="published"
+          render={({ field }) => (
+            <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+              <div className="space-y-0.5">
+                <FormLabel className="text-base">
+                  Опубликовать сразу
+                </FormLabel>
+              </div>
+              <FormControl>
+                <Switch
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                />
+              </FormControl>
             </FormItem>
           )}
         />

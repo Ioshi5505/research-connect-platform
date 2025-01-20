@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/carousel";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Pencil, Trash2 } from "lucide-react";
+import { Pencil, Trash2, Eye, EyeOff } from "lucide-react";
 import { useSession } from "@supabase/auth-helpers-react";
 import { useToast } from "@/hooks/use-toast";
 
@@ -17,7 +17,7 @@ export const NewsCarousel = () => {
   const session = useSession();
   const { toast } = useToast();
 
-  const { data: news, isLoading } = useQuery({
+  const { data: news, isLoading, refetch } = useQuery({
     queryKey: ["recent-news"],
     queryFn: async () => {
       const twoMonthsAgo = new Date();
@@ -48,12 +48,37 @@ export const NewsCarousel = () => {
         title: "Успех",
         description: "Новость успешно удалена",
       });
+      refetch();
     } catch (error) {
       console.error("Error deleting news:", error);
       toast({
         variant: "destructive",
         title: "Ошибка",
         description: "Не удалось удалить новость",
+      });
+    }
+  };
+
+  const handlePublish = async (newsId: string, currentStatus: boolean) => {
+    try {
+      const { error } = await supabase
+        .from("news")
+        .update({ published: !currentStatus })
+        .eq("id", newsId);
+
+      if (error) throw error;
+
+      toast({
+        title: "Успех",
+        description: currentStatus ? "Новость снята с публикации" : "Новость опубликована",
+      });
+      refetch();
+    } catch (error) {
+      console.error("Error updating news publication status:", error);
+      toast({
+        variant: "destructive",
+        title: "Ошибка",
+        description: "Не удалось обновить статус публикации",
       });
     }
   };
@@ -84,9 +109,16 @@ export const NewsCarousel = () => {
                   </div>
                 )}
                 <p className="text-gray-600 line-clamp-3">{newsItem.content}</p>
-                <p className="text-sm font-semibold text-primary mt-4">
-                  {new Date(newsItem.created_at).toLocaleDateString("ru-RU")}
-                </p>
+                <div className="flex items-center justify-between mt-4">
+                  <p className="text-sm font-semibold text-primary">
+                    {new Date(newsItem.created_at).toLocaleDateString("ru-RU")}
+                  </p>
+                  {newsItem.published && (
+                    <span className="text-sm text-green-600 font-medium">
+                      Опубликовано
+                    </span>
+                  )}
+                </div>
                 {isEmployee(newsItem) && (
                   <div className="flex gap-2 mt-4">
                     <Button
@@ -103,6 +135,23 @@ export const NewsCarousel = () => {
                     >
                       <Pencil className="h-4 w-4 mr-2" />
                       Изменить
+                    </Button>
+                    <Button
+                      variant="outline"
+                      className="flex-1"
+                      onClick={() => handlePublish(newsItem.id, newsItem.published)}
+                    >
+                      {newsItem.published ? (
+                        <>
+                          <EyeOff className="h-4 w-4 mr-2" />
+                          Скрыть
+                        </>
+                      ) : (
+                        <>
+                          <Eye className="h-4 w-4 mr-2" />
+                          Опубликовать
+                        </>
+                      )}
                     </Button>
                   </div>
                 )}
