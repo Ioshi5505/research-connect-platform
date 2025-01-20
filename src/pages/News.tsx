@@ -16,12 +16,7 @@ const News = () => {
       console.log('Fetching news...');
       const { data, error } = await supabase
         .from('news')
-        .select(`
-          *,
-          profiles:author_id (
-            role
-          )
-        `)
+        .select('*')
         .order('created_at', { ascending: false });
 
       if (error) {
@@ -33,24 +28,6 @@ const News = () => {
       return data;
     },
   });
-
-  if (error) {
-    console.error('Query error:', error);
-    return (
-      <div>
-        <Navbar />
-        <main className="min-h-screen py-16">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h1 className="text-4xl font-bold text-center mb-12">Новости</h1>
-            <div className="text-center text-red-500">
-              Произошла ошибка при загрузке новостей. Пожалуйста, попробуйте позже.
-            </div>
-          </div>
-        </main>
-        <Footer />
-      </div>
-    );
-  }
 
   return (
     <div>
@@ -71,6 +48,10 @@ const News = () => {
             {isLoading ? (
               <div className="flex justify-center items-center py-12">
                 <Loader2 className="h-8 w-8 animate-spin" />
+              </div>
+            ) : error ? (
+              <div className="text-center text-red-500">
+                Произошла ошибка при загрузке новостей. Пожалуйста, попробуйте позже.
               </div>
             ) : (
               <NewsCarousel news={news || []} />

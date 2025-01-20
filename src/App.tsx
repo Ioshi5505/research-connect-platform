@@ -11,6 +11,7 @@ import Support from "./pages/Support";
 import Contacts from "./pages/Contacts";
 import Profile from "./pages/Profile";
 import UserManagement from "./pages/UserManagement";
+import News from "./pages/News";
 import { supabase } from "./integrations/supabase/client";
 import { ChatWidget } from "./components/ChatWidget";
 import "./App.css";
@@ -34,7 +35,7 @@ function App() {
               <Route path="/contacts" element={<Contacts />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/user-management" element={<UserManagement />} />
-              <Route path="/news" element={<Index />} /> {/* Temporarily pointing to Index until News page is created */}
+              <Route path="/news" element={<News />} />
             </Routes>
           </BrowserRouter>
         </SessionContextProvider>
