@@ -1,7 +1,7 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
-import { Loader2, UserPlus } from "lucide-react";
+import { Loader2, UserPlus, Users } from "lucide-react";
 import { useSession } from "@supabase/auth-helpers-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Navbar } from "@/components/Navbar";
@@ -16,7 +16,7 @@ const EventArticle = () => {
   const navigate = useNavigate();
   console.log('Fetching event with id:', id);
 
-  const { data: event, isLoading, error, refetch } = useQuery({
+  const { data: event, isLoading, error } = useQuery({
     queryKey: ['event', id],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -36,6 +36,23 @@ const EventArticle = () => {
     enabled: !!id,
   });
 
+  const { data: userRole } = useQuery({
+    queryKey: ["user-role", session?.user?.id],
+    queryFn: async () => {
+      if (!session?.user?.id) return null;
+      
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("role")
+        .eq("id", session.user.id)
+        .maybeSingle();
+
+      if (error) throw error;
+      return data?.role || null;
+    },
+    enabled: !!session?.user?.id,
+  });
+
   const handleJoin = () => {
     if (!session?.user) {
       toast({
@@ -49,6 +66,11 @@ const EventArticle = () => {
     navigate(`/join-event/${id}`);
   };
 
+  const handleViewParticipants = () => {
+    navigate(`/event-participants/${id}`);
+  };
+
+  const isEmployee = userRole === "employee";
   const isUserParticipant = event?.event_participants?.some(
     (p: any) => p.user_id === session?.user?.id
   );
@@ -88,18 +110,25 @@ const EventArticle = () => {
             <div className="prose prose-invert max-w-none mb-8">
               {event.description}
             </div>
-            {session?.user?.id && !isUserParticipant && (
-              <Button
-                onClick={handleJoin}
-                disabled={
-                  event.participants_limit &&
-                  event.current_participants >= event.participants_limit
-                }
-                className="w-full md:w-auto"
-              >
-                <UserPlus className="h-4 w-4 mr-2" />
-                Присоединиться
-              </Button>
+            {session?.user?.id && (
+              isEmployee ? (
+                <Button onClick={handleViewParticipants} className="w-full md:w-auto">
+                  <Users className="h-4 w-4 mr-2" />
+                  Список участников
+                </Button>
+              ) : !isUserParticipant && (
+                <Button
+                  onClick={handleJoin}
+                  disabled={
+                    event.participants_limit &&
+                    event.current_participants >= event.participants_limit
+                  }
+                  className="w-full md:w-auto"
+                >
+                  <UserPlus className="h-4 w-4 mr-2" />
+                  Присоединиться
+                </Button>
+              )
             )}
           </article>
         ) : (
