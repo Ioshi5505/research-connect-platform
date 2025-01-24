@@ -23,6 +23,17 @@ export const RequestCard = ({ request, isSelected, onClick }: RequestCardProps) 
     }
   };
 
+  const getWorkType = (type: string) => {
+    switch (type) {
+      case "scientific_work":
+        return "Научная работа";
+      case "scientific_article":
+        return "Научная статья";
+      default:
+        return type;
+    }
+  };
+
   return (
     <Card
       className={`p-4 mb-2 cursor-pointer hover:bg-accent ${
@@ -45,7 +56,7 @@ export const RequestCard = ({ request, isSelected, onClick }: RequestCardProps) 
           <p>
             {request.faculty}, {request.course} курс
           </p>
-          <p className="text-xs">{request.work_type}</p>
+          <p className="text-xs">{getWorkType(request.work_type)}</p>
         </div>
         <div className="text-xs text-muted-foreground flex justify-between items-center">
           <span>

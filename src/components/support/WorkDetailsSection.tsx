@@ -39,8 +39,8 @@ export const WorkDetailsSection = ({ form }: WorkDetailsSectionProps) => {
                 </SelectTrigger>
               </FormControl>
               <SelectContent>
-                <SelectItem value="article">Статья</SelectItem>
-                <SelectItem value="report">Доклад</SelectItem>
+                <SelectItem value="scientific_work">Научная работа</SelectItem>
+                <SelectItem value="scientific_article">Научная статья</SelectItem>
               </SelectContent>
             </Select>
             <FormMessage />
