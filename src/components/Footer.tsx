@@ -77,6 +77,13 @@ export const Footer = () => {
                   +7 927-551-54-64
                 </a>
               </p>
+              <p>
+                <span className="font-medium">Представитель ФПиП:</span> Пищулин Владислав Викторович
+                <br />
+                <a href="tel:+79042857485" className="hover:text-accent transition-colors">
+                  +7 904-285-74-85
+                </a>
+              </p>
             </div>
           </div>
 
