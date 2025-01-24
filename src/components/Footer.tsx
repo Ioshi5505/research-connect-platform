@@ -5,13 +5,20 @@ export const Footer = () => {
     <footer className="bg-secondary mt-auto">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="flex flex-col items-center mb-8">
-          <a href="https://rgust.ru/" target="_blank" rel="noopener noreferrer" className="mb-4 hover:opacity-80 transition-opacity">
+          <div className="flex items-center gap-8 mb-4">
+            <a href="https://rgust.ru/" target="_blank" rel="noopener noreferrer" className="hover:opacity-80 transition-opacity">
+              <img 
+                src="/lovable-uploads/e0d0e47d-0405-42cb-92cd-e526e1216b72.png" 
+                alt="РГУ СоцТех Логотип" 
+                className="h-16"
+              />
+            </a>
             <img 
-              src="/lovable-uploads/e0d0e47d-0405-42cb-92cd-e526e1216b72.png" 
-              alt="РГУ СоцТех Логотип" 
+              src="/lovable-uploads/caf81f94-e38f-40c4-bd66-2cfbd94613f3.png" 
+              alt="СНО Логотип" 
               className="h-16"
             />
-          </a>
+          </div>
           <div className="flex gap-4 items-center">
             <a 
               href="https://rgust.ru/" 
