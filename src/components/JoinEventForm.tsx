@@ -92,6 +92,34 @@ export const JoinEventForm = ({ eventId }: JoinEventFormProps) => {
     }
   };
 
+  const getEducationForm = (form: string) => {
+    switch (form) {
+      case "full_time":
+        return "Очная";
+      case "part_time":
+        return "Заочная";
+      case "distance":
+        return "Дистанционная";
+      default:
+        return form;
+    }
+  };
+
+  const getDegreeType = (type: string) => {
+    switch (type) {
+      case "bachelor":
+        return "Бакалавриат";
+      case "master":
+        return "Магистратура";
+      case "specialist":
+        return "Специалитет";
+      case "postgraduate":
+        return "Аспирантура";
+      default:
+        return type;
+    }
+  };
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
