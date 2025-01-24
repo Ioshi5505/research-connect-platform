@@ -9,7 +9,7 @@ export const formSchema = z.object({
   faculty: z.string().min(1, "Факультет обязателен"),
   course: z.string().min(1, "Курс обязателен"),
   title: z.string().min(1, "Тема обязательна"),
-  workType: z.enum(["scientific_work", "scientific_article"], {
+  workType: z.enum(["article", "report"], {
     required_error: "Выберите тип работы",
   }),
   scientificField: z.string().min(1, "Научная область обязательна"),
