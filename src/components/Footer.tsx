@@ -1,16 +1,45 @@
 import { Mail, MapPin, Phone } from "lucide-react";
-import { Image } from "lucide-react";
 
 export const Footer = () => {
   return (
     <footer className="bg-secondary mt-auto">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="flex flex-col items-center mb-8">
-          <img 
-            src="/lovable-uploads/def14331-0192-4cb4-8bb0-eac6fa62eba2.png" 
-            alt="СНО РГУ СоцТех Logo" 
-            className="h-16 mb-4"
-          />
+          <a href="https://rgust.ru/" target="_blank" rel="noopener noreferrer" className="mb-4 hover:opacity-80 transition-opacity">
+            <img 
+              src="/lovable-uploads/e0d0e47d-0405-42cb-92cd-e526e1216b72.png" 
+              alt="РГУ СоцТех Логотип" 
+              className="h-16"
+            />
+          </a>
+          <div className="flex gap-4 items-center">
+            <a 
+              href="https://rgust.ru/" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="text-foreground hover:text-accent transition-colors"
+            >
+              Официальный сайт
+            </a>
+            <span className="text-foreground">•</span>
+            <a 
+              href="https://t.me/SNORgust" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="text-foreground hover:text-accent transition-colors"
+            >
+              Телеграм СНО
+            </a>
+            <span className="text-foreground">•</span>
+            <a 
+              href="https://t.me/rgusocteh" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="text-foreground hover:text-accent transition-colors"
+            >
+              Телеграм РГУ
+            </a>
+          </div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {/* Contacts Section - Left Side */}
