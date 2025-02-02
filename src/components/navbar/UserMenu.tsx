@@ -23,7 +23,7 @@ export const UserMenu = ({ session, isEmployee }: UserMenuProps) => {
     <div className="flex items-center space-x-4">
       {isEmployee && (
         <Link 
-          to="/support" 
+          to="/support-requests" 
           className="flex items-center gap-2 text-foreground hover:text-accent transition-colors"
         >
           <Inbox className="h-4 w-4" />
