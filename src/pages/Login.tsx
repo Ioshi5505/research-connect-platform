@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useSupabaseClient } from "@supabase/auth-helpers-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -8,6 +7,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useToast } from "@/hooks/use-toast";
 import { Navbar } from "@/components/Navbar";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { supabase } from "@/integrations/supabase/client";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -16,7 +16,6 @@ const Login = () => {
   const [role, setRole] = useState("student");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const supabase = useSupabaseClient();
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -80,7 +79,6 @@ const Login = () => {
       console.error("Auth error:", error);
       let errorMessage = error.message;
       
-      // Улучшенная обработка ошибок
       if (error.message.includes("Database error")) {
         errorMessage = "Ошибка при создании профиля. Пожалуйста, попробуйте еще раз.";
       } else if (error.message.includes("Invalid login credentials")) {
