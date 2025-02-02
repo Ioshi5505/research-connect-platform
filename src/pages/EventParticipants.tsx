@@ -13,9 +13,37 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
+const getEducationForm = (form: string) => {
+  switch (form) {
+    case 'full_time':
+      return 'Очная';
+    case 'part_time':
+      return 'Заочная';
+    case 'distance':
+      return 'Дистанционная';
+    default:
+      return form;
+  }
+};
+
+const getDegreeType = (type: string) => {
+  switch (type) {
+    case 'bachelor':
+      return 'Бакалавриат';
+    case 'master':
+      return 'Магистратура';
+    case 'specialist':
+      return 'Специалитет';
+    case 'postgraduate':
+      return 'Аспирантура';
+    default:
+      return type;
+  }
+};
+
 const EventParticipants = () => {
   const { id } = useParams();
-  console.log("Fetching participants for event:", id);
+  console.log("Загрузка участников мероприятия:", id);
 
   const { data: eventData, isLoading: eventLoading } = useQuery({
     queryKey: ["event", id],
@@ -40,7 +68,7 @@ const EventParticipants = () => {
         .eq("event_id", id);
 
       if (error) throw error;
-      console.log("Fetched participants:", data);
+      console.log("Загружены участники:", data);
       return data;
     },
   });
@@ -76,8 +104,8 @@ const EventParticipants = () => {
                     <TableCell>{participant.full_name}</TableCell>
                     <TableCell>{participant.course}</TableCell>
                     <TableCell>{participant.study_group}</TableCell>
-                    <TableCell>{participant.education_form}</TableCell>
-                    <TableCell>{participant.degree_type}</TableCell>
+                    <TableCell>{getEducationForm(participant.education_form)}</TableCell>
+                    <TableCell>{getDegreeType(participant.degree_type)}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>

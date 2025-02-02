@@ -10,6 +10,17 @@ interface EventsSectionProps {
   hideAddButton?: boolean;
 }
 
+const getWorkType = (type: string) => {
+  switch (type) {
+    case "scientific_work":
+      return "Научная работа";
+    case "scientific_article":
+      return "Научная статья";
+    default:
+      return type;
+  }
+};
+
 export const EventsSection = ({ hideAddButton }: EventsSectionProps) => {
   const { data: events, isLoading, refetch } = useQuery({
     queryKey: ["events"],
@@ -135,7 +146,11 @@ export const EventsSection = ({ hideAddButton }: EventsSectionProps) => {
                   <p className="text-gray-600 mb-4">{event.description}</p>
                   <div className="space-y-2">
                     <p className="text-sm font-semibold text-primary">
-                      {new Date(event.date).toLocaleDateString("ru-RU")}
+                      {new Date(event.date).toLocaleDateString("ru-RU", {
+                        day: 'numeric',
+                        month: 'long',
+                        year: 'numeric'
+                      })}
                     </p>
                     {event.participants_limit && (
                       <p className="text-sm text-gray-500">

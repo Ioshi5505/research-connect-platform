@@ -19,6 +19,10 @@ type Profile = {
   email?: string;
 };
 
+const getRoleInRussian = (role: string) => {
+  return role === 'employee' ? 'Сотрудник' : 'Студент';
+};
+
 export const UserRoleManagement = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -127,10 +131,16 @@ export const UserRoleManagement = () => {
           {users?.map((user) => (
             <TableRow key={user.id}>
               <TableCell>{user.email}</TableCell>
-              <TableCell>{new Date(user.created_at).toLocaleDateString()}</TableCell>
+              <TableCell>
+                {new Date(user.created_at).toLocaleDateString("ru-RU", {
+                  day: 'numeric',
+                  month: 'long',
+                  year: 'numeric'
+                })}
+              </TableCell>
               <TableCell>
                 <span className={user.role === "employee" ? "text-green-600" : "text-blue-600"}>
-                  {user.role === "employee" ? "Сотрудник" : "Студент"}
+                  {getRoleInRussian(user.role)}
                 </span>
               </TableCell>
               <TableCell>
