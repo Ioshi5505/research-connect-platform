@@ -1,5 +1,6 @@
 import { Navbar } from "@/components/Navbar";
 import { SupportRequestForm } from "@/components/SupportRequestForm";
+import { EmployeeRequestsSection } from "@/components/support/EmployeeRequestsSection";
 import { useSession } from "@supabase/auth-helpers-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -36,17 +37,13 @@ const Support = () => {
   });
 
   const isEmployee = profile?.role === "employee";
+  console.log("Is employee:", isEmployee);
 
   useEffect(() => {
     if (!session) {
       navigate("/login");
-      return;
     }
-
-    if (isEmployee) {
-      navigate("/support-requests");
-    }
-  }, [session, isEmployee, navigate]);
+  }, [session, navigate]);
 
   if (isLoading) {
     return (
@@ -80,10 +77,10 @@ const Support = () => {
       <Navbar />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <h1 className="text-3xl font-bold mb-6">
-          Заявка на сопровождение
+          {isEmployee ? "Полученные заявки" : "Заявка на сопровождение"}
         </h1>
         <div className="bg-card p-6 rounded-lg shadow">
-          <SupportRequestForm />
+          {isEmployee ? <EmployeeRequestsSection /> : <SupportRequestForm />}
         </div>
       </div>
     </div>
