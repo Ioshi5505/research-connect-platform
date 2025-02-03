@@ -1,57 +1,69 @@
-import { Link } from "react-router-dom";
-import { ChevronDown, UserCog } from "lucide-react";
-import { LucideIcon } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { useQuery } from "@tanstack/react-query";
+import { useSession } from "@supabase/auth-helpers-react";
+import { supabase } from "@/integrations/supabase/client";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+  NavigationMenu,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  navigationMenuTriggerStyle,
+} from "@/components/ui/navigation-menu";
+import { Link } from "react-router-dom";
 
-interface ResourcesMenuProps {
-  isEmployee?: boolean;
-}
+export const ResourcesMenu = () => {
+  const session = useSession();
 
-interface MenuItemType {
-  path: string;
-  label: string;
-  icon?: LucideIcon;
-}
+  const { data: profile } = useQuery({
+    queryKey: ["profile", session?.user?.id],
+    queryFn: async () => {
+      if (!session?.user?.id) return null;
+      const { data } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", session.user.id)
+        .maybeSingle();
+      return data;
+    },
+    enabled: !!session?.user?.id,
+  });
 
-export const ResourcesMenu = ({ isEmployee }: ResourcesMenuProps) => {
-  const resourcesMenuItems: MenuItemType[] = [
-    { path: "/council", label: "Управляющий совет" },
+  const isEmployee = profile?.role === "employee";
+
+  let resourcesMenuItems = [
+    { path: "/council", label: "Совет молодых ученых" },
     { path: "/documents", label: "Документы" },
+    { path: "/support", label: isEmployee ? "Заявки" : "Подать заявку" },
     { path: "/contacts", label: "Контакты" },
   ];
 
   if (isEmployee) {
+    resourcesMenuItems = resourcesMenuItems.map(item => 
+      item.path === "/support" 
+        ? { path: "/received-requests", label: "Полученные заявки" }
+        : item
+    );
+  }
+
+  if (isEmployee) {
     resourcesMenuItems.push({
       path: "/user-management",
-      label: "Управление учётками",
-      icon: UserCog,
+      label: "Управление пользователями",
     });
   }
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="flex items-center gap-2">
-          Ресурсы
-          <ChevronDown className="h-4 w-4" />
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="start" className="w-56">
+    <NavigationMenu>
+      <NavigationMenuList>
         {resourcesMenuItems.map((item) => (
-          <DropdownMenuItem key={item.path} asChild>
-            <Link to={item.path} className="w-full flex items-center gap-2">
-              {item.icon && <item.icon className="h-4 w-4" />}
-              {item.label}
+          <NavigationMenuItem key={item.path}>
+            <Link to={item.path}>
+              <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                {item.label}
+              </NavigationMenuLink>
             </Link>
-          </DropdownMenuItem>
+          </NavigationMenuItem>
         ))}
-      </DropdownMenuContent>
-    </DropdownMenu>
+      </NavigationMenuList>
+    </NavigationMenu>
   );
 };

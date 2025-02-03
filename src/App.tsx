@@ -16,6 +16,7 @@ import NewsArticle from "./pages/NewsArticle";
 import EventArticle from "./pages/EventArticle";
 import JoinEvent from "./pages/JoinEvent";
 import EventParticipants from "./pages/EventParticipants";
+import ReceivedRequests from "./pages/ReceivedRequests";
 import { supabase } from "./integrations/supabase/client";
 import "./App.css";
 
@@ -42,6 +43,7 @@ function App() {
               <Route path="/user-management" element={<UserManagement />} />
               <Route path="/news" element={<News />} />
               <Route path="/news/:id" element={<NewsArticle />} />
+              <Route path="/received-requests" element={<ReceivedRequests />} />
             </Routes>
           </BrowserRouter>
         </SessionContextProvider>
