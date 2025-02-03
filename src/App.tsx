@@ -17,7 +17,6 @@ import EventArticle from "./pages/EventArticle";
 import JoinEvent from "./pages/JoinEvent";
 import EventParticipants from "./pages/EventParticipants";
 import { supabase } from "./integrations/supabase/client";
-import { ChatWidget } from "./components/ChatWidget";
 import "./App.css";
 
 const queryClient = new QueryClient();
@@ -28,7 +27,6 @@ function App() {
       <QueryClientProvider client={queryClient}>
         <SessionContextProvider supabaseClient={supabase}>
           <BrowserRouter>
-            <ChatWidget />
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/events" element={<Events />} />

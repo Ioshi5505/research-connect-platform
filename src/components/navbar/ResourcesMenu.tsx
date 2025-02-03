@@ -26,7 +26,6 @@ export const ResourcesMenu = ({ isEmployee }: ResourcesMenuProps) => {
     { path: "/contacts", label: "Контакты" },
   ];
 
-  // Add user management item for employees
   if (isEmployee) {
     resourcesMenuItems.push({
       path: "/user-management",
